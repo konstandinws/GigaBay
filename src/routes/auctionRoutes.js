@@ -1,5 +1,5 @@
 import express from "express";
-import auctionController from "../controllers/auctionController";
+import auctionController from "./controllers/auctionsRoutes.js";
 
 const router = express.Router();
 

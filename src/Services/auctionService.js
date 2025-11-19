@@ -1,4 +1,4 @@
-import Auction from "../models/Auction";
+import Auction from "./models/Auction.js";
 
 // le service gere la logique en appellant le modele
 //il ne s'occupe pas des requetes http
