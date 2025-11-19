@@ -3,12 +3,15 @@ let auctionsDB = [
     { id: 2, title: "PlayStation 1", price: 20, end: "2024-11-30" }
 ]
 
-const Auction = {
+// le modele gere uniquement les donnees
+// definit l'acces aux donnees
+
+class Auction{
 
     getAllAuctions(){
         const auctions = Auction.getAll();
         return auctions;
-    },
+    }
 
     findById(id){
         return auctionsDB.find(item => item.id === parseInt(id))

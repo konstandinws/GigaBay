@@ -1,13 +1,17 @@
 import Auction from "../models/Auction";
 
+// le service gere la logique en appellant le modele
+//il ne s'occupe pas des requetes http
+
+// mehtodes statiques pour eviter de creer un objet 
 class AuctionService {
     
-    getAllAuctions(){
+    static getAllAuctions(){
         const auctions = Auction.getAllAuctions();
         return auctions;
     }
 
-    getAuctionById(id) {
+    static getAuctionById(id) {
         const auction = Auction.findById(id);
 
         if (!auction) {
@@ -16,3 +20,5 @@ class AuctionService {
         return auction;
     }
 }
+
+export default AuctionService;
