@@ -1,15 +1,12 @@
-import AuctionService from "./Services/auctionService.js";
+import AuctionService from "../services/auctionService.js"
 
 // gere les requetes http
 // je ne fais en classes mais comme dans le cours du prof
 
 const getAll = (req, res) => {
     try {
-        const allAuctions = auctionService.getAllAuctions();
-        res.status(200).json({
-            status: 'success',
-            data: allAuctions
-        });
+        const allAuctions = AuctionService.getAllAuctions();
+        res.status(200).json({ data: allAuctions });
     } catch (error) {
         res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
@@ -23,7 +20,7 @@ const getOne = (req, res) => {
         const auction = AuctionService.getAuctionById(id);
         res.status(200).json(auction);
     } catch (error){
-        res.status(404).json({message: "introuvable"});
+        res.status(404).json({message: error.message});
     }
 }
 

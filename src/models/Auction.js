@@ -8,12 +8,11 @@ let auctionsDB = [
 
 class Auction{
 
-    getAllAuctions(){
-        const auctions = Auction.getAll();
-        return auctions;
+    static getAll(){
+        return auctionsDB;
     }
 
-    findById(id){
+    static findById(id){
         return auctionsDB.find(item => item.id === parseInt(id))
     }
 

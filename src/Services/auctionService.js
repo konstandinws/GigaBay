@@ -1,4 +1,4 @@
-import Auction from "./models/Auction.js";
+import Auction from "../models/Auction.js";
 
 // le service gere la logique en appellant le modele
 //il ne s'occupe pas des requetes http
@@ -7,7 +7,7 @@ import Auction from "./models/Auction.js";
 class AuctionService {
     
     static getAllAuctions(){
-        const auctions = Auction.getAllAuctions();
+        const auctions = Auction.getAll();
         return auctions;
     }
 
