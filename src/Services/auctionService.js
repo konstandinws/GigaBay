@@ -32,6 +32,10 @@ class AuctionService {
         
         return createdAuction;
     }
+
+    static modifyAuction(id){
+        
+    }
 }
 
 export default AuctionService;
