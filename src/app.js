@@ -12,6 +12,10 @@ app.get("/", (req, res) => {
     res.send("test");
 });
 
+//exemple de test CURL
+// curl -X POST http://localhost:3000/api/auctions 
+// -H "Content-Type: application/json" 
+// -d "{\"title\": \"Test Windows\", \"price\": 150, \"end\": \"2025-05-20\"}"
 app.use("/api/auctions", auctionRoutes);
 
 

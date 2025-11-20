@@ -33,8 +33,14 @@ class AuctionService {
         return createdAuction;
     }
 
-    static modifyAuction(id){
-        
+    static modifyAuction(id, data){
+        const modifiedAuction = Auction.modifyAuction(id, data);
+
+        if(!modifiedAuction) {
+            throw new Error("Enchère introuvable, impossible de modifier.");
+        }
+
+        return modifiedAuction;
     }
 }
 

@@ -8,4 +8,6 @@ router.get("/:id", auctionController.getOne);
 
 router.post("/", auctionController.addOne);
 
+router.put("/:id", auctionController.modify);
+
 export default router;
