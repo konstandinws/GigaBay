@@ -21,6 +21,21 @@ class Auction{
         auctionsDB.push({id: id, ...auction});
     }
 
+    static modifyAuction(id, newData){
+        const index = auctionsDB.find(item => item.id === parseInt(id));
+
+        if(index === -1){
+            return null;
+        };
+
+        auctionsDB[index] = {
+            ...auctionsDB[index],
+            ...newData
+        };
+
+        return auctionsDB[index];
+    }
+
 };
 
 export default Auction;
