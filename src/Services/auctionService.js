@@ -19,6 +19,19 @@ class AuctionService {
         }
         return auction;
     }
+
+    static createAuction(auctionData){
+        if(!auctionData.title || !auctionData.price){
+            throw new Error("Le titre et prix sont obligatoires");
+        }
+        if (auctionData.price < 0) {
+            throw new Error("Le prix ne peut pas être négatif.");
+        }
+
+        const createdAuction = Auction.addAuction(auctionData);
+        
+        return createdAuction;
+    }
 }
 
 export default AuctionService;
