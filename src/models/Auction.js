@@ -16,6 +16,11 @@ class Auction{
         return auctionsDB.find(item => item.id === parseInt(id))
     }
 
+    static addAuction(auction){
+        const id = auctionsDB.length + 1;
+        auctionsDB.push({id: id, ...auction});
+    }
+
 };
 
 export default Auction;

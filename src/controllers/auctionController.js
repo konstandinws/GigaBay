@@ -24,5 +24,19 @@ const getOne = (req, res) => {
     }
 }
 
-export default {getAll, getOne};
+const addOne = (req, res) => {
+    try{
+        const newAuction = AuctionService.createAuction(req.body);
+
+        res.status(201).json({
+            status: "success",
+            data: newAuction
+        })
+    }
+    catch (error) {
+        res.status(400).json({message: error.message});
+    }
+}
+
+export default {getAll, getOne, addOne};
 

@@ -6,4 +6,6 @@ const router = express.Router();
 router.get("/", auctionController.getAll);
 router.get("/:id", auctionController.getOne);
 
+router.post("/", auctionController.addOne);
+
 export default router;
