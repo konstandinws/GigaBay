@@ -1,45 +1,49 @@
-import { createDB } from "./db.js";
+import db from "../config/db.js";
 
-async function init() {
-  const db = await createDB();
+db.serialize(() => {
+    console.log("🚧 Création des tables...");
 
-  await db.exec(`
-    CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      username TEXT UNIQUE NOT NULL,
-      email TEXT UNIQUE NOT NULL,
-      password TEXT NOT NULL,
-      created_at TEXT DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
+    // TABLE users
+    db.run(`
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    `);
 
-  await db.exec(`
-    CREATE TABLE IF NOT EXISTS auctions (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      title TEXT NOT NULL,
-      description TEXT NOT NULL,
-      starting_price REAL NOT NULL,
-      user_id INTEGER NOT NULL,
-      end_date TEXT NOT NULL,
-      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY(user_id) REFERENCES users(id)
-    )
-  `);
+    // TABLE auctions
+    db.run(`
+        CREATE TABLE IF NOT EXISTS auctions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            description TEXT,
+            starting_price REAL NOT NULL,
+            current_price REAL NOT NULL,
+            end_date DATETIME NOT NULL,
+            user_id INTEGER NOT NULL,
 
-  await db.exec(`
-    CREATE TABLE IF NOT EXISTS bids (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      auction_id INTEGER NOT NULL,
-      user_id INTEGER NOT NULL,
-      amount REAL NOT NULL,
-      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY(auction_id) REFERENCES auctions(id),
-      FOREIGN KEY(user_id) REFERENCES users(id)
-    )
-  `);
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        )
+    `);
 
-  console.log("Database initialized!");
-}
+    // TABLE bids
+    db.run(`
+        CREATE TABLE IF NOT EXISTS bids (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            amount REAL NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            user_id INTEGER NOT NULL,
+            auction_id INTEGER NOT NULL,
 
-init();
-export default init;
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY (auction_id) REFERENCES auctions(id) ON DELETE CASCADE
+        )
+    `);
+
+    console.log("✅ Tables créées avec succès.");
+});
+
+db.close();

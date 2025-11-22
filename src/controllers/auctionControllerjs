@@ -1,4 +1,4 @@
-import AuctionService from "../Services/auctionService.js"
+import AuctionService from "../services/auctionService.js"
 
 // gere les requetes http
 // je ne fais en classes mais comme dans le cours du prof
