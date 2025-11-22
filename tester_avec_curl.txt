@@ -1,0 +1,15 @@
+CREER UN USER
+
+curl -X POST http://localhost:3000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"username": "Alice", "email": "alice@test.com", "password": "monSuperMotDePasse"}'
+
+CONNEXION 
+
+curl -X POST http://localhost:3000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "alice@test.com", "password": "monSuperMotDePasse"}'
+
+
+dans user et dans authService il y a des console.log() qui sont en commentaires
+enlevez les pour vous aidez a comprendre
