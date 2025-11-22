@@ -38,5 +38,25 @@ const addOne = (req, res) => {
     }
 }
 
-export default {getAll, getOne, addOne};
+const modify = (req, res) => {
+    try {
+        const id = req.params.id;
+        const data = req.body;
+
+        const modifiedAuction = AuctionService.modifyAuction(id, data);
+
+        res.status(200).json({
+            status: "success",
+            data: modifiedAuction
+        });
+    } catch (error){
+        if (error.message.includes("introuvable")) {
+            res.status(404).json({ message: error.message });
+        } else {
+            res.status(500).json({ message: "Erreur serveur", error: error.message });
+        }
+    }
+}
+
+export default {getAll, getOne, addOne, modify};
 
