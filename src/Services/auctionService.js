@@ -75,6 +75,8 @@ class AuctionService {
 
         // Sauvegarde dans la table images
         const image = await Auction.addImage(auctionId, filename);
+        const imageUrl = `/uploads/${filename}`;
+        await Auction.updateImage(auctionId, imageUrl);
         return image;
     }
 }
