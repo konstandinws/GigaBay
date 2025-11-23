@@ -4,12 +4,12 @@ import { fileURLToPath } from "url";
 
 sqlite3.verbose();
 
-// 1. CONFIGURATION DU CHEMIN
+//CONFIGURATION DU CHEMIN
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const dbPath = path.join(__dirname, "../../database.sqlite");
 
-// 2. CRÉATION DE LA CONNEXION
+//CRÉATION DE LA CONNEXION
 const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
         console.error("❌ Erreur connexion SQLite:", err.message);
@@ -18,7 +18,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
     }
 });
 
-// 3. INITIALISATION DES TABLES
+//INITIALISATION DES TABLES
 db.serialize(() => {
     // Active les clés étrangères
     db.run("PRAGMA foreign_keys = ON;");
@@ -76,8 +76,6 @@ db.serialize(() => {
     `);
 
     console.log("✅ Tables prêtes.");
-    // ⛔️ J'AI SUPPRIMÉ db.close() ICI ! C'est ça qui cassait tout.
 });
 
-// 4. EXPORT DE LA CONNEXION (OUVERTE)
 export default db;

@@ -17,7 +17,8 @@ curl -X POST http://localhost:3000/api/auctions \
   -H "Authorization: Bearer <TOKEN>" \
   -d '{"title": "Nintendo Switch", "price": 200, "description": "Presque neuve"}'
 
-AJOUTER UNE IMAGE
-  curl -X POST http://localhost:3000/api/auctions/1/image \
+AJOUTER DES IMAGES
+  curl -X POST http://localhost:3000/api/auctions/1/images \
   -H "Authorization: Bearer <TOKEN>" \
-  -F "image=@test.jpg"
+  -F "images=@test.jpg" \
+  -F "images=@test.jpg"

@@ -67,18 +67,18 @@ const modify = (req, res) => {
     }
 }
 
-const addImage = async (req, res) => {
+const addImages = async (req, res) => {
     try {
-        if (!req.file) return res.status(400).json({ error: "Aucun fichier" });
+        if (!req.files) return res.status(400).json({ error: "Aucun fichier" });
         
         // On appelle le service
-        const image = await AuctionService.uploadImage(req.params.id, req.user.id, req.file.filename);
+        const images = await AuctionService.addMultipleImages(req.params.id, req.user.id, req.files);
         
-        res.status(201).json({ status: "success", data: image });
+        res.status(201).json({ status: "success", data: images });
     } catch (e) {
         const status = e.message.includes("interdit") ? 403 : 400;
         res.status(status).json({ error: e.message });
     }
 };
 
-export default {getAll, getOne, addOne, modify, addImage};
+export default {getAll, getOne, addOne, modify, addImages};
