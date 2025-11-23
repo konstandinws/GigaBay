@@ -31,7 +31,7 @@ const addOne = async (req, res) => {
             return res.status(401).json({ message: "Utilisateur non identifié" });
         }
 
-        const userId = req.user.id; // Vient du Token
+        const userId = req.user.id; // Vient du Token qui a été injecté par authMiddleware
         const auctionData = req.body; // Vient du formulaire
 
         const newAuction = await AuctionService.createAuction(auctionData, userId);
