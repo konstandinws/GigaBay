@@ -1,6 +1,8 @@
 import express from "express";
 import auctionController from "../controllers/auctionController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
+import { upload } from "../middleware/upload.js";
+import { createAuction, uploadImage } from "../controllers/auctionController.js";
 
 const router = express.Router();
 
@@ -16,6 +18,7 @@ router.post("/", authMiddleware, auctionController.addOne);
 //curl -X PUT http://localhost:3000/api/auctions/1 
 // -H "Content-Type: application/json" 
 // -d "{\"price\": 75}"
-router.put("/:id", auctionController.modify);
+
+router.put("/:id", authMiddleware, auctionController.modify);
 
 export default router;

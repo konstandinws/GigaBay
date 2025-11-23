@@ -42,6 +42,19 @@ class Auction {
         });
     }
 
+    static addImage(auctionId, filename) {
+        return new Promise((resolve, reject) => {
+            db.run(
+                "INSERT INTO images (filename, auction_id) VALUES (?, ?)",
+                [filename, auctionId],
+                function(err) {
+                    if (err) reject(err);
+                    else resolve({ id: this.lastID, filename, auction_id: auctionId });
+                }
+            );
+        });
+    }
+
     static updateCurrentPrice(id, newPrice) {
         return new Promise((resolve, reject) => {
             db.run(
