@@ -21,4 +21,4 @@ AJOUTER DES IMAGES
   curl -X POST http://localhost:3000/api/auctions/1/images \
   -H "Authorization: Bearer <TOKEN>" \
   -F "images=@test.jpg" \
-  -F "images=@test.jpg"
+  -F "images=@test2.jpg"

@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const SECRET_KEY = "MON_SECRET_TRES_SECRET"; // Doit être la même que dans le service
+const SECRET_KEY = process.env.JWT_SECRET; // Doit être la même que dans le service
 
 const authMiddleware = (req, res, next) => {
     // 1. Récupérer le token dans le header (Authorization: Bearer <token>)

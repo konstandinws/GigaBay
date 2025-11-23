@@ -1,9 +1,11 @@
+import "dotenv/config";
 import express from "express"
 import auctionRoutes from "./routes/auctionRoutes.js"
 import authController from "./controllers/authController.js";
 import authRoutes from "./routes/authRoutes.js";
 import cors from "cors";
 import "./config/db.js";
+
 
 const app = express();
 
@@ -23,7 +25,7 @@ app.use("/api/auth", authRoutes);
 
 
 
-const PORT = 3000;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });
