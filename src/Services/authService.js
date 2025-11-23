@@ -49,7 +49,7 @@ class AuthService {
             throw new Error("Cet email est déjà utilisé.");
         }
 
-        const salt = await bcrypt.genSalt(process.env.BCRYPT_ROUNDS);
+        const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(userData.password, salt);
 
         const newUser = await User.create(
