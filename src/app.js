@@ -2,9 +2,9 @@ import express from "express";
 import cors from "cors";
 
 // ROUTES
-import auctionRoutes from "./src/routes/auctionRoutes.js";
-import authRoutes from "./src/routes/auth.js";
-import userRoutes from "./src/routes/users.js";
+import auctionRoutes from "./routes/auctionRoute.js";
+import authRoutes from "./routes/authRoute.js";
+import userRoutes from "./routes/users.js";
 
 const app = express();
 
