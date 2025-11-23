@@ -17,7 +17,7 @@ const authMiddleware = (req, res, next) => {
         const decoded = jwt.verify(token, SECRET_KEY);
         
         // 3. On "colle" l'utilisateur dans la requête pour que le controlleur sache qui c'est
-        req.user = decoded;
+        req.user = decoded; // ici par exemple { id: 7, email: "test@test.com" }
         
         // 4. On laisse passer
         next(); 
