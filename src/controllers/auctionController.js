@@ -67,4 +67,18 @@ const modify = (req, res) => {
     }
 }
 
-export default {getAll, getOne, addOne, modify};
+const addImage = async (req, res) => {
+    try {
+        if (!req.file) return res.status(400).json({ error: "Aucun fichier" });
+        
+        // On appelle le service
+        const image = await AuctionService.uploadImage(req.params.id, req.user.id, req.file.filename);
+        
+        res.status(201).json({ status: "success", data: image });
+    } catch (e) {
+        const status = e.message.includes("interdit") ? 403 : 400;
+        res.status(status).json({ error: e.message });
+    }
+};
+
+export default {getAll, getOne, addOne, modify, addImage};
