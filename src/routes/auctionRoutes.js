@@ -21,4 +21,11 @@ router.post("/", authMiddleware, auctionController.addOne);
 
 router.put("/:id", authMiddleware, auctionController.modify);
 
+// route pour les images
+router.post("/:id/image", 
+    authMiddleware, 
+    upload.single("image"), 
+    auctionController.addImage
+);
+
 export default router;
