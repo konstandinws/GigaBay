@@ -1,61 +1,44 @@
-import AuctionService from "../services/auctionService.js"
+import Auction from "../models/Auction.js";
 
-// gere les requetes http
-// je ne fais en classes mais comme dans le cours du prof
+export async function createAuction(req, res) {
+  try {
+    const { title, description, starting_price, end_date } = req.body;
 
-const getAll = (req, res) => {
-    try {
-        const allAuctions = AuctionService.getAllAuctions();
-        res.status(200).json({ data: allAuctions });
-    } catch (error) {
-        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    if (!title || !starting_price || !end_date) {
+      return res.status(400).json({ message: "Missing required fields" });
     }
+
+    // en attendant le middleware JWT → user_id en dur TEMPORAIRE
+    const user_id = 1;
+
+    const data = {
+      title,
+      description: description || "",
+      price: parseFloat(starting_price),
+      image_url: null,
+      user_id,
+      end_date,
+    };
+
+    const created = await Auction.createAuction(data);
+
+    res.status(201).json({
+      message: "Auction created",
+      id: created.id,
+    });
+
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: "Server error" });
+  }
 }
 
-const getOne = (req, res) => {
-    try{
-        const id = req.params.id;
-        // grace aux methodes statiques pas besoin de creer 
-        // un objet AuctionService pour appeler les methodes
-        const auction = AuctionService.getAuctionById(id);
-        res.status(200).json(auction);
-    } catch (error){
-        res.status(404).json({message: error.message});
-    }
+export async function listAuctions(req, res) {
+  try {
+    const rows = await Auction.getAll();
+    res.json(rows);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: "Server error" });
+  }
 }
-
-const addOne = (req, res) => {
-    try{
-        const newAuction = AuctionService.createAuction(req.body);
-
-        res.status(201).json({
-            status: "success",
-            data: newAuction
-        })
-    }
-    catch (error) {
-        res.status(400).json({message: error.message});
-    }
-}
-
-const modify = (req, res) => {
-    try {
-        const id = req.params.id;
-        const data = req.body;
-
-        const modifiedAuction = AuctionService.modifyAuction(id, data);
-
-        res.status(200).json({
-            status: "success",
-            data: modifiedAuction
-        });
-    } catch (error){
-        if (error.message.includes("introuvable")) {
-            res.status(404).json({ message: error.message });
-        } else {
-            res.status(500).json({ message: "Erreur serveur", error: error.message });
-        }
-    }
-}
-
-export default {getAll, getOne, addOne, modify};

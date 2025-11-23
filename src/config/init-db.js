@@ -44,6 +44,18 @@ db.serialize(() => {
     `);
 
     console.log("✅ Tables créées avec succès.");
+
+    // Test de login avec simulation de création d'utilisateur
+    db.run(
+  `INSERT INTO users (username, email, password) VALUES (?, ?, ?)`,
+  [
+    "testuser",
+    "test@test.com",
+    "$2b$10$XrQ12fc8wR5LAnBrH6sGsOXhN6jbBTbgomYtNbMpnMuf3fiTrmROu"
+  ]
+);
+
+    console.log("✅ Utilisateur de test inséré.");
 });
 
 db.close();
