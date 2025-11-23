@@ -1,7 +1,5 @@
 import AuctionService from "../services/auctionService.js"
 
-// gere les requetes http
-// je ne fais en classes mais comme dans le cours du prof
 
 const getAll = async (req, res) => {
     try {
@@ -68,4 +66,18 @@ const modify = (req, res) => {
     }
 }
 
-export default {getAll, getOne, addOne, modify};
+const addImages = async (req, res) => {
+    try {
+        if (!req.files) return res.status(400).json({ error: "Aucun fichier" });
+        
+        // On appelle le service
+        const images = await AuctionService.addMultipleImages(req.params.id, req.user.id, req.files);
+        
+        res.status(201).json({ status: "success", data: images });
+    } catch (e) {
+        const status = e.message.includes("interdit") ? 403 : 400;
+        res.status(status).json({ error: e.message });
+    }
+};
+
+export default {getAll, getOne, addOne, modify, addImages};

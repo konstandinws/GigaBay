@@ -43,6 +43,17 @@ db.serialize(() => {
         )
     `);
 
+    // TABLE pour les images
+    db.run(`
+        CREATE TABLE IF NOT EXISTS images (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            filename TEXT NOT NULL,
+            auction_id INTEGER NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (auction_id) REFERENCES auctions(id) ON DELETE CASCADE
+        )
+    `);
+
     console.log("✅ Tables créées avec succès.");
 
     // Test de login avec simulation de création d'utilisateur

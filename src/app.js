@@ -3,7 +3,7 @@ import auctionRoutes from "./routes/auctionRoutes.js"
 import authController from "./controllers/authController.js";
 import authRoutes from "./routes/authRoutes.js";
 import cors from "cors";
-
+import "./config/db.js";
 
 const app = express();
 

@@ -63,6 +63,32 @@ class AuctionService {
         
         // return updated;
     }
+
+    static async addMultipleImages(auctionId, userId, files) {
+        const auction = await Auction.findById(auctionId);
+        if (!auction) throw new Error("Enchère introuvable");
+
+        if (auction.user_id !== userId) {
+            throw new Error("Accès interdit : Vous n'êtes pas le vendeur.");
+        }
+
+        const uploadedImages = [];
+
+        //On boucle sur chaque fichier reçu
+        for (const file of files) {
+            // On l'ajoute dans la table 'images'
+            const saved = await Auction.addImage(auctionId, file.filename);
+            uploadedImages.push(saved);
+        }
+
+        //On met à jour l'image principale de l'enchère avec la PREMIÈRE image
+        if (files.length > 0) {
+            const mainImageUrl = `/uploads/${files[0].filename}`;
+            await Auction.updateImage(auctionId, mainImageUrl);
+        }
+
+        return uploadedImages;
+    }
 }
 
 export default AuctionService;
