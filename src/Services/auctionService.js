@@ -63,6 +63,20 @@ class AuctionService {
         
         // return updated;
     }
+
+    static async uploadImage(auctionId, userId, filename) {
+        const auction = await Auction.findById(auctionId);
+        if (!auction) throw new Error("Enchère introuvable");
+
+        // verif du propriétaire
+        if (auction.user_id !== userId) {
+            throw new Error("Accès interdit : Vous n'êtes pas le vendeur.");
+        }
+
+        // Sauvegarde dans la table images
+        const image = await Auction.addImage(auctionId, filename);
+        return image;
+    }
 }
 
 export default AuctionService;
