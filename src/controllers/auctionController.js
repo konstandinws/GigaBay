@@ -39,7 +39,7 @@ const addOne = (req, res) => {
 }
 
 const modify = (req, res) => {
-    try {
+    try {
         const id = req.params.id;
         const data = req.body;
 
@@ -59,4 +59,3 @@ const modify = (req, res) => {
 }
 
 export default {getAll, getOne, addOne, modify};
-

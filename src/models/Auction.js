@@ -1,41 +1,59 @@
-let auctionsDB = [
-    { id: 1, title: "Vélo Vintage", price: 50, end: "2024-12-01" },
-    { id: 2, title: "PlayStation 1", price: 20, end: "2024-11-30" }
-]
+import db from "../config/db.js";
 
-// le modele gere uniquement les donnees
-// definit l'acces aux donnees
+class Auction {
 
-class Auction{
+    static create(data) {
+        const { title, description, starting_price, end_date, user_id } = data;
 
-    static getAll(){
-        return auctionsDB;
+        return new Promise((resolve, reject) => {
+            const sql = `
+                INSERT INTO auctions 
+                (title, description, starting_price, current_price, end_date, user_id)
+                VALUES (?, ?, ?, ?, ?, ?)
+            `;
+
+            db.run(
+                sql,
+                [title, description, starting_price, starting_price, end_date, user_id],
+                function (err) {
+                    if (err) reject(err);
+                    else resolve({ id: this.lastID, ...data });
+                }
+            );
+        });
     }
 
-    static findById(id){
-        return auctionsDB.find(item => item.id === parseInt(id))
+    static getAll() {
+        return new Promise((resolve, reject) => {
+            db.all("SELECT * FROM auctions", [], (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
     }
 
-    static addAuction(auction){
-        const id = auctionsDB.length + 1;
-        auctionsDB.push({id: id, ...auction});
+    static findById(id) {
+        return new Promise((resolve, reject) => {
+            db.get(
+                "SELECT * FROM auctions WHERE id = ?",
+                [id],
+                (err, row) => err ? reject(err) : resolve(row)
+            );
+        });
     }
 
-    static modifyAuction(id, newData){
-        const index = auctionsDB.find(item => item.id === parseInt(id));
-
-        if(index === -1){
-            return null;
-        };
-
-        auctionsDB[index] = {
-            ...auctionsDB[index],
-            ...newData
-        };
-
-        return auctionsDB[index];
+    static updateCurrentPrice(id, newPrice) {
+        return new Promise((resolve, reject) => {
+            db.run(
+                "UPDATE auctions SET current_price = ? WHERE id = ?",
+                [newPrice, id],
+                function (err) {
+                    if (err) reject(err);
+                    else resolve(true);
+                }
+            );
+        });
     }
-
-};
+}
 
 export default Auction;

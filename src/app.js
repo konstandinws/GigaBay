@@ -2,22 +2,26 @@ import express from "express"
 import auctionRoutes from "./routes/auctionRoutes.js"
 import authController from "./controllers/authController.js";
 import authRoutes from "./routes/authRoutes.js";
+import express from "express";
+import cors from "cors";
 
-// le programme se lance a groupe01/src/app.js d'ou les ./ ou ../
+// ROUTES
+import auctionRoutes from "./src/routes/auctionRoutes.js";
+import authRoutes from "./src/routes/auth.js";
+import userRoutes from "./src/routes/users.js";
 
 const app = express();
 
+// Middlewares globaux
+app.use(cors());
 app.use(express.json());
 
-
+// Test route
 app.get("/", (req, res) => {
-    res.send("test");
+    res.send("API OK");
 });
 
-//exemple de test CURL
-// curl -X POST http://localhost:3000/api/auctions 
-// -H "Content-Type: application/json" 
-// -d "{\"title\": \"Test Windows\", \"price\": 150, \"end\": \"2025-05-20\"}"
+// Use routes
 app.use("/api/auctions", auctionRoutes);
 
 app.use("/api/auth", authRoutes);
@@ -26,5 +30,11 @@ app.use("/api/auth", authRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {
-    console.log(`Server started at http://localhost:${PORT}`);
-})
+    console.log(`Server running at http://localhost:${PORT}`);
+});
+
+// app.use(express.static("public"));
+// A utiliser plus tard pour servir des fichiers statiques (images, css, js, etc.):
+// &
+// res.SendFile(path.join(__dirname, 'public', 'index.html'));
+// Pour servir un fichier HTML statique en réponse à une requête.

@@ -1,42 +1,38 @@
-import bcrypt from 'bcrypt';
-
-const passwordAdmin = "123456";
-const hashAdmin = bcrypt.hashSync(passwordAdmin, 10);
-
-// fausse base de données
-const usersDB = [
-    { 
-        id: 1, 
-        email: "admin@test.com", 
-        password: hashAdmin, // Le vrai hash généré ci-dessus
-        username: "Konstantinos" 
-    }
-];
+import db from "../config/db.js";
 
 class User {
-    
 
-    static async findByEmail(email) {
-        return usersDB.find(user => user.email === email);
+    static create(username, email, password) {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                INSERT INTO users (username, email, password)
+                VALUES (?, ?, ?)
+            `;
+            db.run(sql, [username, email, password], function(err) {
+                if (err) reject(err);
+                else resolve({ id: this.lastID, username, email });
+            });
+        });
     }
-    
 
-    static async findById(id) {
-        return usersDB.find(user => user.id === parseInt(id));
+    static findByEmail(email) {
+        return new Promise((resolve, reject) => {
+            db.get(
+                "SELECT * FROM users WHERE email = ?",
+                [email],
+                (err, row) => err ? reject(err) : resolve(row)
+            );
+        });
     }
 
-
-    static async create(username, email, password) {
-        const newUser = {
-            id: usersDB.length + 1, // Auto-incrément manuel
-            username: username,
-            email: email,
-            password: password // On stocke le hash reçu du Service
-        };
-
-        usersDB.push(newUser);
-        // console.log(usersDB);
-        return newUser;
+    static findById(id) {
+        return new Promise((resolve, reject) => {
+            db.get(
+                "SELECT * FROM users WHERE id = ?",
+                [id],
+                (err, row) => err ? reject(err) : resolve(row)
+            );
+        });
     }
 }
 
