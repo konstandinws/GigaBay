@@ -1,0 +1,24 @@
+CREER UN USER
+
+curl -X POST http://localhost:3000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"username": "Alice", "email": "alice@test.com", "password": "monSuperMotDePasse"}'
+
+CONNEXION 
+
+curl -X POST http://localhost:3000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "alice@test.com", "password": "monSuperMotDePasse"}'
+
+CREATION D'UNE ENCHERE
+
+curl -X POST http://localhost:3000/api/auctions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -d '{"title": "Nintendo Switch", "price": 200, "description": "Presque neuve"}'
+
+AJOUTER DES IMAGES
+  curl -X POST http://localhost:3000/api/auctions/1/images \
+  -H "Authorization: Bearer <TOKEN>" \
+  -F "images=@test.jpg" \
+  -F "images=@test.jpg"
