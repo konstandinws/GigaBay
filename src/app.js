@@ -2,7 +2,6 @@ import express from "express"
 import auctionRoutes from "./routes/auctionRoutes.js"
 import authController from "./controllers/authController.js";
 import authRoutes from "./routes/authRoutes.js";
-import express from "express";
 import cors from "cors";
 
 // ROUTES
