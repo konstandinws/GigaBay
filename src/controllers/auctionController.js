@@ -1,5 +1,7 @@
-import Auction from "../models/Auction.js";
+import AuctionService from "../Services/auctionService.js"
 
+// gere les requetes http
+// je ne fais en classes mais comme dans le cours du prof
 
 const getAll = async (req, res) => {
     try {
