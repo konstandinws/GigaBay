@@ -44,14 +44,23 @@ class AuctionService {
         return createdAuction;
     }
 
-    static modifyAuction(id, data){
-        const modifiedAuction = Auction.modifyAuction(id, data);
+    static async modifyAuction(id, data, userId) {
+        // On cherche d'abord l'enchère pour voir si elle existe
+        const auction = await Auction.findById(id);
 
-        if(!modifiedAuction) {
-            throw new Error("Enchère introuvable, impossible de modifier.");
+        if (!auction) {
+            throw new Error("Enchère introuvable.");
         }
 
-        return modifiedAuction;
+        // On vérifie si l'utilisateur est le propriétaire
+        if (auction.user_id !== userId) {
+            throw new Error("Accès interdit : Vous n'êtes pas le vendeur de cet objet.");
+        }
+
+        // on appelle le modèle pour faire la modif
+        // const updated = await Auction.update(); pas encore implementée dans le modele Auction.js
+        
+        return updated;
     }
 }
 
