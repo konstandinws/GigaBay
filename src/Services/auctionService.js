@@ -44,6 +44,7 @@ class AuctionService {
         return createdAuction;
     }
 
+    // fonction incomplete
     static async modifyAuction(id, data, userId) {
         // On cherche d'abord l'enchère pour voir si elle existe
         const auction = await Auction.findById(id);
@@ -60,7 +61,7 @@ class AuctionService {
         // on appelle le modèle pour faire la modif
         // const updated = await Auction.update(); pas encore implementée dans le modele Auction.js
         
-        return updated;
+        // return updated;
     }
 }
 

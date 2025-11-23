@@ -3,30 +3,38 @@ import AuctionService from "../services/auctionService.js"
 // gere les requetes http
 // je ne fais en classes mais comme dans le cours du prof
 
-const getAll = (req, res) => {
+const getAll = async (req, res) => {
     try {
-        const allAuctions = AuctionService.getAllAuctions();
+        const allAuctions = await AuctionService.getAllAuctions();
         res.status(200).json({ data: allAuctions });
     } catch (error) {
         res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
 }
 
-const getOne = (req, res) => {
+const getOne = async (req, res) => {
     try{
         const id = req.params.id;
         // grace aux methodes statiques pas besoin de creer 
         // un objet AuctionService pour appeler les methodes
-        const auction = AuctionService.getAuctionById(id);
+        const auction = await AuctionService.getAuctionById(id);
         res.status(200).json(auction);
     } catch (error){
         res.status(404).json({message: error.message});
     }
 }
 
-const addOne = (req, res) => {
+const addOne = async (req, res) => {
     try{
-        const newAuction = AuctionService.createAuction(req.body);
+
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({ message: "Utilisateur non identifié" });
+        }
+
+        const userId = req.user.id; // Vient du Token
+        const auctionData = req.body; // Vient du formulaire
+
+        const newAuction = await AuctionService.createAuction(auctionData, userId);
 
         res.status(201).json({
             status: "success",
@@ -38,6 +46,7 @@ const addOne = (req, res) => {
     }
 }
 
+// pour l'instant pas implementé avec sqlite
 const modify = (req, res) => {
     try {
         const id = req.params.id;
