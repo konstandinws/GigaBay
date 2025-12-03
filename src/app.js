@@ -1,15 +1,16 @@
 import express from "express"
 import auctionRoutes from "./routes/auctionRoutes.js"
-import authController from "./controllers/authController.js";
 import authRoutes from "./routes/authRoutes.js";
+import profileRoutes from "./routes/profileRoutes.js"
 import cors from "cors";
-
+import cookieParser from "cookie-parser";
 
 const app = express();
 
 // Middlewares globaux
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 // Test route
 app.get("/", (req, res) => {
@@ -20,6 +21,8 @@ app.get("/", (req, res) => {
 app.use("/api/auctions", auctionRoutes);
 
 app.use("/api/auth", authRoutes);
+
+app.use("/api/profile", profileRoutes)
 
 
 
