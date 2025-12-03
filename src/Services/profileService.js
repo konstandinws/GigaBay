@@ -6,3 +6,5 @@ class profileService{
        return await User.findById(userId);
     }
 }
+
+export default profileService;
