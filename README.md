@@ -23,3 +23,11 @@ cp .env.example .env
 ```bash
 npm start
 ```
+
+## Vidéo de démonstration
+
+video de démonstration de notre projet sur YouTube :
+
+- Lien direct : [Regarder la vidéo sur YouTube](https://www.youtube.com/watch?v=9iUMYQEBTA8)
+
+- lien : https://www.youtube.com/watch?v=9iUMYQEBTA8
