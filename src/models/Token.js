@@ -33,6 +33,16 @@ class Token{
             });
         });
     }
+
+    static delete(jti) {
+        return new Promise((resolve, reject) => {
+            const sql = `DELETE FROM tokens WHERE jti = ?`;
+            db.run(sql, [jti], function (err) {
+                if (err) reject(err);
+                else resolve(this.changes);
+            });
+        });
+    }
 }
 
 export default Token;
