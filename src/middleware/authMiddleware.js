@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
 
-const SECRET_KEY = "MON_SECRET_TRES_SECRET"; // Doit être la même que dans le service
+const SECRET_KEY = process.env.JWT_SECRET; // Doit être la même que dans le service
 
-const authMiddleware = (req, res, next) => {
+const authMiddleware = async (req, res, next) => {
     // 1. Récupérer le token dans le header (Authorization: Bearer <token>)
     const authHeader = req.headers.authorization;
     
@@ -21,8 +21,28 @@ const authMiddleware = (req, res, next) => {
         
         // 4. On laisse passer
         next(); 
+
     } catch (error) {
-        res.status(401).json({ message: "Token invalide." });
+        console.error('Erreur d\'authentification:', error);
+        
+        if (error.name === 'JsonWebTokenError') {
+        return res.status(401).json({
+            success: false,
+            message: 'Token invalide'
+        });
+        }
+        
+        if (error.name === 'TokenExpiredError') {
+        return res.status(401).json({
+            success: false,
+            message: 'Token expiré'
+        });
+        }
+
+        res.status(500).json({
+            success: false,
+            message: 'Erreur serveur'
+        });
     }
 };
 
