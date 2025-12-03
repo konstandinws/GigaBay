@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
 
-const SECRET_KEY = process.env.JWT_SECRET; // Doit être la même que dans le service
+const SECRET_KEY = toString(process.env.JWT_SECRET); // Doit être la même que dans le service
 
-const authMiddleware = async (req, res, next) => {
+const authMiddleware = (req, res, next) => {
     // 1. Récupérer le token dans le header (Authorization: Bearer <token>)
     const authHeader = req.headers.authorization;
     
@@ -35,7 +35,7 @@ const authMiddleware = async (req, res, next) => {
         if (error.name === 'TokenExpiredError') {
         return res.status(401).json({
             success: false,
-            message: 'Token expiré'
+            message: 'Access Token expiré'
         });
         }
 

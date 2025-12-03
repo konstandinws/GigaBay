@@ -1,8 +1,7 @@
 // separer la logique de creation et de gestion des token pour pas
 // rendre authService trop lourd
-
 import jwt from "jsonwebtoken";
-import crypto from "node:crypto";
+import crypto from "crypto";
 
 
 const accessSecret = toString(process.env.JWT_SECRET);
@@ -33,7 +32,9 @@ class TokenService {
             { expiresIn : "7d" }
         );
 
-        return {accessToken, refreshToken};
+        const decodedRefresh = jwt.decode(refreshToken);
+
+        return {accessToken, refreshToken, jti: decodedRefresh.jti, exp: decodedRefresh.exp};
     }
 
     static async refreshAccessToken(){

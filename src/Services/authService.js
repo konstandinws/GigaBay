@@ -1,10 +1,7 @@
-// on verifie le mdp et cree le token
-
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
-import TokenService from "../Services/tokenService.js"
-
-const SECRET_KEY = "MON_SECRET_TRES_SECRET"; // À mettre dans .env normalement
+import TokenService from "../Services/tokenService.js";
+import Token from "../models/Token.js";
 
 function incorrectInput(){
     throw new Error("Email ou mot de passe incorrect");
@@ -28,15 +25,11 @@ class AuthService {
         if (!isValid) {
             incorrectInput();
         }
-        
-        // Générer le Token 
-        // const token = jwt.sign(
-        //     { id: user.id, name: user.name }, // Ce qu'on met dans le badge
-        //     SECRET_KEY,                       // La clé pour signer
-        //     { expiresIn: '1h' }               // Durée de validité
-        // );
 
-        const { accessToken, refreshToken } = TokenService.generateToken(user)
+        const { accessToken, refreshToken, jti, exp } = TokenService.generateToken(user);
+
+        //stocker le refresh token dans la DB
+        await Token.create({ jti: jti, userId: user.id, exp: exp });
 
         const { password: _, ...userWithoutPassword } = user;
 
@@ -53,6 +46,7 @@ class AuthService {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(userData.password, salt);
 
+        // enlever le mdp et retourner les access et refresh token
         const newUser = await User.create(
             userData.username, 
             userData.email, 
