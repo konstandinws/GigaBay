@@ -8,6 +8,10 @@ router.post("/login", authController.login);
 
 router.post("/register", authController.register);
 
+router.post("/refresh", authController.refreshAccessToken);
+
+router.post("/logout", authController.logout);
+
 // ajouter un validation middleware
 
 export default router;

@@ -3,9 +3,12 @@
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 
+const accessSecret = process.env.JWT_SECRET;
+const refreshSecret = process.env.JWT_REFRESH_TOKEN_SECRET;
 
-const accessSecret = toString(process.env.JWT_SECRET);
-const refreshSecret = toString(process.env.JWT_REFRESH_TOKEN_SECRET);
+if (!accessSecret || !refreshSecret) {
+    throw new Error("ERREUR FATALE : La variable JWT_SECRET n'est pas définie dans le fichier .env !");
+}
 
 class TokenService {
     
@@ -37,61 +40,27 @@ class TokenService {
         return {accessToken, refreshToken, jti: decodedRefresh.jti, exp: decodedRefresh.exp};
     }
 
-    static async refreshAccessToken(){
-        try{
-            const decoded = jwt.verify(refreshToken, refreshSecret);
+    static generateNewAccessToken(user){
+        
+        const accessToken = jwt.sign(
+            { 
+                id: user.id,
+                name: user.name,
+                type: "access" 
+            },
+            accessSecret,
+            { expiresIn : "15m" }
+        );
 
-            if (decoded.type !== "refresh"){
-                throw new Error("type de token invalide");
-            }
-
-            const tokenRecord = await RefreshToken.findOne({
-                userId: decoded.id,
-                tokenId: decoded.jti 
-            });
-
-            if(!tokenRecord || tokenRecord.revoked){
-                throw new Error("Refresh token révoqué");
-            }
-
-            const user = await User.findById(decoded.id);
-            if(!user){
-                throw new Error("Utilisateur introuvable");
-            }
-
-            const newAccesToken = jwt.sign(
-                {
-                    id:user.id,
-                    name: user.name,
-                    type: "access"
-                },
-                accessSecret,
-                { expiresIn: "15m"}
-            );
-
-            // IMPORTANT POUR LA ROTATION
-            // generer un nouvel refresh token et le retourner !!!
-
-            return {accessToken: newAccesToken};
-
-        }  
-        catch(error){
-            throw new Error("refresh token invalide")
-        } 
+        return accessToken;
     }
 
-    static async revokeTokens(userId, tokenId = null){
-        if(tokenId){
-            await RefreshToken.updateOne(
-                { userId, tokenId },
-                { revoked: true, revokedAt: new Date() }
-            );
-        } else {
-            await RefreshToken.updateMany(
-                { userId },
-                { revoked: true, revokedAt: new Date()}
-            );
-        }
+    static verifyRefreshToken(token) {
+            return jwt.verify(token, refreshSecret);
+    }
+
+    static decodeRefreshToken(token) {
+            return jwt.decode(token);
     }
 }
 

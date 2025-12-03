@@ -1,3 +1,4 @@
+import dotenv from "dotenv/config";
 import express from "express"
 import auctionRoutes from "./routes/auctionRoutes.js"
 import authRoutes from "./routes/authRoutes.js";

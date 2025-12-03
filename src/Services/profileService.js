@@ -3,7 +3,11 @@ import User from "../models/User.js"
 class profileService{
 
     static async getProfile(userId){
-       return await User.findById(userId);
+       const user = await User.findById(userId);
+
+       const { password: _, ...userWithoutPassword } = user;
+
+       return userWithoutPassword;
     }
 }
 
