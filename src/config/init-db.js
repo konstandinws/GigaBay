@@ -43,6 +43,18 @@ db.serialize(() => {
         )
     `);
 
+    // TABLE tokens
+    db.run(`
+        CREATE TABLE IF NOT EXISTS tokens (
+            jti TEXT PRIMARY KEY, 
+            user_id INTEGER NOT NULL,
+            expiration INTEGER NOT NULL, 
+            revoked INTEGER DEFAULT 0,
+
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        )
+    `); 
+
     console.log("✅ Tables créées avec succès.");
 });
 
