@@ -2,9 +2,13 @@
 
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import TokenService from "../Services/tokenService.js"
 
 const SECRET_KEY = "MON_SECRET_TRES_SECRET"; // À mettre dans .env normalement
+
+function incorrectInput(){
+    throw new Error("Email ou mot de passe incorrect");
+}
 
 class AuthService {
     static async login(email, password) {
@@ -14,7 +18,7 @@ class AuthService {
         // console.log("2. Mot de passe reçu:", password);
         const user = await User.findByEmail(email);
         if (!user) {
-            throw new Error("Email ou mot de passe incorrect");
+            incorrectInput();
         }
 
         // Vérifier le mot de passe 
@@ -22,20 +26,21 @@ class AuthService {
         // console.log("4. Password en BDD:", user.password);
         const isValid = await bcrypt.compare(password, user.password);
         if (!isValid) {
-            throw new Error("Email ou mot de passe incorrect");
+            incorrectInput();
         }
         
-
         // Générer le Token 
-        const token = jwt.sign(
-            { id: user.id, name: user.name }, // Ce qu'on met dans le badge
-            SECRET_KEY,                       // La clé pour signer
-            { expiresIn: '1h' }               // Durée de validité
-        );
+        // const token = jwt.sign(
+        //     { id: user.id, name: user.name }, // Ce qu'on met dans le badge
+        //     SECRET_KEY,                       // La clé pour signer
+        //     { expiresIn: '1h' }               // Durée de validité
+        // );
+
+        const { accessToken, refreshToken } = TokenService.generateToken(user)
 
         const { password: _, ...userWithoutPassword } = user;
 
-        return { user: userWithoutPassword, token };
+        return { user: userWithoutPassword, accessToken, refreshToken };
     }
 
     static async register(userData) {
