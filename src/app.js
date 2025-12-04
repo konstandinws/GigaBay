@@ -1,12 +1,14 @@
 import "dotenv/config";
 import express from "express"
 import auctionRoutes from "./routes/auctionRoutes.js"
-import authController from "./controllers/authController.js";
 import authRoutes from "./routes/authRoutes.js";
-import cors from "cors";
+import cors from "cors";  //autorise le frontend pour plus tard
 import "./config/db.js";
+import path from "path";
+import { fileURLToPath } from "url";
 
-
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const app = express();
 
 // Middlewares globaux
@@ -22,6 +24,10 @@ app.get("/", (req, res) => {
 app.use("/api/auctions", auctionRoutes);
 
 app.use("/api/auth", authRoutes);
+
+app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
+
+
 
 
 

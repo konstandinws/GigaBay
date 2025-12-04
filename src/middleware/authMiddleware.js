@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 
+//clé pour décoder le token
 const SECRET_KEY = process.env.JWT_SECRET; // Doit être la même que dans le service
 
 const authMiddleware = (req, res, next) => {

@@ -32,11 +32,16 @@ class AuthService {
 
         // Générer le Token 
         const token = jwt.sign(
-            { id: user.id, name: user.name }, // Ce qu'on met dans le badge
+            { 
+                id: user.id, name: user.name 
+            }, // Ce qu'on met dans le token
             SECRET_KEY,                       // La clé pour signer
-            { expiresIn: '1h' }               // Durée de validité
+            { 
+                expiresIn: '1h' 
+            }               // Durée de validité
         );
 
+        //supprimer pasword avant d'envoyer le user
         const { password: _, ...userWithoutPassword } = user;
 
         return { user: userWithoutPassword, token };
@@ -49,6 +54,7 @@ class AuthService {
             throw new Error("Cet email est déjà utilisé.");
         }
 
+        //généfrer un hash sécurisé pour le mot de passe
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(userData.password, salt);
 
