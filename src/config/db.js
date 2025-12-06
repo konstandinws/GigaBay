@@ -2,7 +2,7 @@ import sqlite3 from "sqlite3";
 import path from "path";
 import { fileURLToPath } from "url";
 
-sqlite3.verbose();
+sqlite3.verbose();  //utile pour les debugs
 
 //CONFIGURATION DU CHEMIN
 const __filename = fileURLToPath(import.meta.url);
@@ -19,9 +19,9 @@ const db = new sqlite3.Database(dbPath, (err) => {
 });
 
 //INITIALISATION DES TABLES
-db.serialize(() => {
+db.serialize(() => { //éxécute les requetes dans l'ordre
     // Active les clés étrangères
-    db.run("PRAGMA foreign_keys = ON;");
+    db.run("PRAGMA foreign_keys = ON;"); //active les clés sécondaires
 
     console.log("🚧 Vérification des tables...");
 
