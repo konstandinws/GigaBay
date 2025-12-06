@@ -1,26 +1,16 @@
-const API_BASE_URL = "http://localhost:3000";
+import { getCurrentUser } from "../javaScript/auth.js";
 
  async function loadProfile() {
-    const token = localStorage.getItem("token");
-    if(!token) {
+    const user = await getCurrentUser();
+
+    if (!user) {
         window.location.href = "login.html";
-        return;
-    }
-
-    
-    const res = await fetch(API_BASE_URL + "/api/auth/me", {
-            headers: {Authorization: `Bearer ${token}`},
-    });
-
-
-    const data = await res.json();
-    if(!res.ok) {
-        alert("Erreur : " + data.message);
         return;
     }
 
     document.getElementById("profile-email").textContent = data.user.email;
     document.getElementById("profile-id").textContent = data.user.id;
+
 }
 
 document.getElementById("logout-button").addEventListener("click", () => {
