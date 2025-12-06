@@ -1,6 +1,6 @@
 const API_BASE_URL = "http://localhost:3000";
 
-export async function loadProfile() {
+ async function loadProfile() {
     const token = localStorage.getItem("token");
     if(!token) {
         window.location.href = "login.html";
@@ -27,3 +27,5 @@ document.getElementById("logout-button").addEventListener("click", () => {
     localStorage.removeItem("token");
     window.location.href = "login.html";
 });
+
+loadProfile();
