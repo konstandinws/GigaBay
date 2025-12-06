@@ -20,6 +20,10 @@ app.get("/", (req, res) => {
     res.send("API OK");
 });
 
+// Fichiers statiques (html, css, js, images, etc.)
+app.use(express.static(path.join(__dirname, "..", "public")));
+
+
 // Use routes
 app.use("/api/auctions", auctionRoutes);
 
