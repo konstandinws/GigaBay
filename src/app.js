@@ -40,8 +40,6 @@ app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });
 
-// app.use(express.static("public"));
-// A utiliser plus tard pour servir des fichiers statiques (images, css, js, etc.):
-// &
+
 // res.SendFile(path.join(__dirname, 'public', 'index.html'));
 // Pour servir un fichier HTML statique en réponse à une requête.
