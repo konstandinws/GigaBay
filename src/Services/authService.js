@@ -4,7 +4,11 @@ import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-const SECRET_KEY = "MON_SECRET_TRES_SECRET"; // À mettre dans .env normalement
+const SECRET_KEY = process.env.JWT_SECRET;
+
+if (!SECRET_KEY) {
+    throw new Error("ERREUR FATALE : La variable JWT_SECRET n'est pas définie dans le fichier .env !");
+}
 
 class AuthService {
     static async login(email, password) {
@@ -28,11 +32,16 @@ class AuthService {
 
         // Générer le Token 
         const token = jwt.sign(
-            { id: user.id, name: user.name }, // Ce qu'on met dans le badge
+            { 
+                id: user.id, name: user.name 
+            }, // Ce qu'on met dans le token
             SECRET_KEY,                       // La clé pour signer
-            { expiresIn: '1h' }               // Durée de validité
+            { 
+                expiresIn: '1h' 
+            }               // Durée de validité
         );
 
+        //supprimer pasword avant d'envoyer le user
         const { password: _, ...userWithoutPassword } = user;
 
         return { user: userWithoutPassword, token };
@@ -45,6 +54,7 @@ class AuthService {
             throw new Error("Cet email est déjà utilisé.");
         }
 
+        //généfrer un hash sécurisé pour le mot de passe
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(userData.password, salt);
 

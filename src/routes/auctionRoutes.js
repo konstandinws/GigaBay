@@ -1,21 +1,41 @@
 import express from "express";
 import auctionController from "../controllers/auctionController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
+import bidController from "../controllers/bidController.js"
+import { upload } from "../middleware/upload.js";
 
 const router = express.Router();
 
+//liste toutes les enchères
 router.get("/", auctionController.getAll);
+
+//enchère par id
 router.get("/:id", auctionController.getOne);
 
 //exemple de test CURL
 // curl -X POST http://localhost:3000/api/auctions 
 // -H "Content-Type: application/json" 
 // -d "{\"title\": \"Test Windows\", \"price\": 150, \"end\": \"2025-05-20\"}"
+// créer une enchère
 router.post("/", authMiddleware, auctionController.addOne);
 
 //curl -X PUT http://localhost:3000/api/auctions/1 
 // -H "Content-Type: application/json" 
 // -d "{\"price\": 75}"
-router.put("/:id", auctionController.modify);
 
+router.put("/:id", authMiddleware, auctionController.modify);
+
+// route pour les images, upmoad de plusieurs images
+router.post("/:id/images", 
+    authMiddleware, 
+    upload.array("images", 5), 
+    auctionController.addImages
+);
+
+//nouvelle route pour ENCHÉRIR sur une enchère
+router.post(
+  "/:id/bids",
+  authMiddleware,
+  bidController.placeBid
+);
 export default router;

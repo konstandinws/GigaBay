@@ -1,11 +1,14 @@
+import "dotenv/config";
 import express from "express"
-import cors from "cors";
-
-// ROUTES
-import auctionRoutes from "./routes/auctionRoutes.js";
+import auctionRoutes from "./routes/auctionRoutes.js"
 import authRoutes from "./routes/authRoutes.js";
-import userRoutes from "./routes/users.js";
+import cors from "cors";  //autorise le frontend pour plus tard
+import "./config/db.js";
+import path from "path";
+import { fileURLToPath } from "url";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const app = express();
 
 // Middlewares globaux
@@ -17,20 +20,26 @@ app.get("/", (req, res) => {
     res.send("API OK");
 });
 
+// Fichiers statiques (html, css, js, images, etc.)
+app.use(express.static(path.join(__dirname, "..", "public")));
+
+
 // Use routes
 app.use("/api/auctions", auctionRoutes);
 
 app.use("/api/auth", authRoutes);
 
+app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
 
 
-const PORT = 3000;
+
+
+
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });
 
-// app.use(express.static("public"));
-// A utiliser plus tard pour servir des fichiers statiques (images, css, js, etc.):
-// &
+
 // res.SendFile(path.join(__dirname, 'public', 'index.html'));
 // Pour servir un fichier HTML statique en réponse à une requête.

@@ -12,11 +12,13 @@ class Auction {
                 VALUES (?, ?, ?, ?, ?, ?)
             `;
 
-            db.run(
+            db.run(   //execute la requete
                 sql,
+                //current_price est initialisé avec la mm valeur que starting_price
                 [title, description, starting_price, starting_price, end_date, user_id],
                 function (err) {
                     if (err) reject(err);
+                    // this.lastID = id auto-incrémenté généré par SQLite
                     else resolve({ id: this.lastID, ...data });
                 }
             );
@@ -27,7 +29,7 @@ class Auction {
         return new Promise((resolve, reject) => {
             db.all("SELECT * FROM auctions", [], (err, rows) => {
                 if (err) reject(err);
-                else resolve(rows);
+                else resolve(rows);  // rows = tableau d'enchères
             });
         });
     }
@@ -38,6 +40,36 @@ class Auction {
                 "SELECT * FROM auctions WHERE id = ?",
                 [id],
                 (err, row) => err ? reject(err) : resolve(row)
+            );
+        });
+    }
+
+    static addImage(auctionId, filename) {
+        return new Promise((resolve, reject) => {
+            db.run(
+                "INSERT INTO images (filename, auction_id) VALUES (?, ?)",
+                [filename, auctionId],
+                function(err) {
+                    if (err) reject(err);
+                    else resolve({ id: this.lastID, 
+                        filename,
+                        auction_id: auctionId,
+                    });
+                }
+            );
+        });
+    }
+
+    static updateImage(id, imageUrl) {
+        return new Promise((resolve, reject) => {
+            // Cette requête met à jour la colonne image_url de la table auctions
+            db.run(
+                "UPDATE auctions SET image_url = ? WHERE id = ?",
+                [imageUrl, id],
+                function (err) {
+                    if (err) reject(err);
+                    else resolve(this.changes > 0);
+                }
             );
         });
     }

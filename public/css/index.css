@@ -1,0 +1,605 @@
+/* =========================
+   GLOBAL
+   ========================= */
+
+body {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: #f6f8fb;
+  color: #1f2933;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+/* Conteneur principal (pour la liste des enchères) */
+.container {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 0 80px;
+}
+
+/* Messages d’erreur / succès */
+.error {
+  color: #e53935;
+  margin-bottom: 10px;
+}
+
+.success {
+  color: #1b9e77;
+  margin-bottom: 10px;
+}
+
+/* Titre de section (ex : “Enchères en cours”) */
+.section-title {
+  font-size: 1.8rem;
+  color: #0d3b66;
+  margin-bottom: 20px;
+  border-left: 5px solid #0d3b66;
+  padding-left: 10px;
+  font-weight: 700;
+}
+
+/* =========================
+   TOPBAR & HEADER
+   ========================= */
+
+/* Barre marron en haut */
+.topbar {
+  background: #5d370b;
+  color: #ffffff;
+  font-size: 0.9rem;
+  padding: 6px 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.contact-info span + span {
+  margin-left: 20px;
+}
+
+/* Header principal blanc avec logo + recherche + boutons */
+.main-header {
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 80px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo img {
+  width: 45px;
+  height: 45px;
+  object-fit: contain;
+}
+
+.logo-text {
+  font-size: 1.4rem;
+  color: #447c00;
+}
+
+/* Barre de recherche */
+.search-bar {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  max-width: 400px;
+  margin: 0 40px;
+  border: 1px solid #cbd2e1;
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+.search-bar input {
+  flex: 1;
+  border: none;
+  padding: 8px 14px;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.search-bar button {
+  border: none;
+  background: #d29300;
+  color: white;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+/* Boutons Connexion / Inscription */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.btn-connexion,
+.btn-inscription {
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.btn-connexion {
+  background: #7c6700;
+  color: #ffffff;
+}
+
+.btn-inscription {
+  background: #f8f8f8;
+  color: #7c7000;
+  border: 1px solid #ccd;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Sélecteur de langue */
+.lang {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #ccd;
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  background: #ffffff;
+}
+
+/* =========================
+   NAVIGATION PRINCIPALE
+   ========================= */
+
+.main-nav {
+  background: #ffffff;
+  padding: 10px 80px 6px;
+  border-bottom: 2px solid #f0e0c5;
+  display: flex;
+  gap: 24px;
+}
+
+.nav-link {
+  font-size: 0.95rem;
+  text-decoration: none;
+  color: #3b3b3b;
+  padding-bottom: 6px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.nav-link:hover {
+  color: #d29300;
+  border-bottom-color: #d29300;
+}
+
+.nav-link.active {
+  color: #447c00;
+  border-bottom-color: #447c00;
+}
+
+/* =========================
+   HERO (bandeau en haut de l’index)
+   ========================= */
+
+.hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #0d3b66, #145c9e);
+  color: #ffffff;
+  padding: 5px 10px;
+  min-height: 50px;
+}
+
+.hero-left {
+  flex: 1;
+  max-width: 520px;
+}
+
+.hero-left h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+
+.hero-left p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 10px;
+  opacity: 0.95;
+}
+
+.hero-left .btn-inscription {
+  display: inline-block;
+  padding: 12px 24px;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #0d3b66;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.hero-left .btn-inscription:hover {
+  background: #e3e8ef;
+}
+
+.hero-right {
+  flex: 1;
+  text-align: right;
+}
+
+.hero-right img {
+  max-width: 500px;
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* =========================
+   SECTION CATÉGORIES
+   ========================= */
+
+.categories {
+  background: #f7f2e9;
+  padding: 20px 80px 24px;
+  border-bottom: 1px solid #e3d4bc;
+}
+
+.categories-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* flèches gauche/droite */
+.cat-arrow {
+  border: none;
+  background: #ffffff;
+  color: #7c6700;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+}
+
+/* liste horizontale de cartes */
+.categories-list {
+  flex: 1;
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 4px 0;
+}
+
+/* scrollbar custom */
+.categories-list::-webkit-scrollbar {
+  height: 6px;
+}
+.categories-list::-webkit-scrollbar-thumb {
+  background: #d3c2a0;
+  border-radius: 999px;
+}
+.categories-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* carte catégorie */
+.category-card {
+  min-width: 180px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 10px 14px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid #e6d8bd;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.category-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+  border-color: #d29300;
+}
+
+.category-card.active {
+  border-color: #447c00;
+  box-shadow: 0 6px 14px rgba(68, 124, 0, 0.25);
+}
+
+.category-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #fff7e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+}
+
+.category-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #4b3a22;
+}
+
+/* petits points en dessous */
+.categories-dots {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.categories-dots .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #d6c7a5;
+}
+
+.categories-dots .dot.active {
+  background: #7c6700;
+}
+
+/* =========================
+   GRILLE D’ENCHÈRES (cartes)
+   ========================= */
+
+.grid {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* carte principale */
+.card.auction-card {
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* image */
+.card.auction-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+
+/* bandeau "Enchère la plus élevée / de départ" */
+.auction-badge {
+  position: relative;
+  margin: -22px auto 14px;
+  padding: 8px 20px;
+  border-radius: 999px;
+  background: #7c6700;       /* marron/vert du thème */
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(124, 103, 0, 0.5);
+}
+
+/* corps de la carte */
+.auction-body {
+  padding: 0 26px 18px;
+  text-align: center;
+  flex: 1;
+}
+
+.auction-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1f2933;
+  margin-bottom: 18px;
+}
+
+/* ligne + "Numéro de lot" au centre */
+.auction-lot-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.auction-lot-line {
+  flex: 1;
+  height: 1px;
+  background: #e3d4bc;
+}
+
+.auction-lot-box {
+  padding: 10px 18px;
+  border-radius: 4px;
+  border: 1px solid #e3d4bc;
+  background: #ffffff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #1f2933;
+}
+
+.auction-bids {
+  margin: 4px 0 0;
+  font-size: 0.95rem;
+  color: #34495e;
+}
+
+/* pied de carte : heure + bouton */
+.card-footer {
+  padding: 12px 22px 16px;
+  border-top: 1px solid #e0e5ec;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.auction-time {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  color: #1f2933;
+}
+
+.auction-clock-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #5d370b;   /* même marron que la topbar */
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+/* =========================
+   FORMULAIRES (login / register / new-auction)
+   ========================= */
+
+.page-form {
+  min-height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 0;
+  background: #fdfbf6;
+}
+
+.form-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  padding: 30px 40px;
+  width: 400px;
+}
+
+.form-card h2 {
+  text-align: center;
+  color: #5d370b;
+  margin-bottom: 20px;
+}
+
+.form-card label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #3b3b3b;
+}
+
+.form-card input,
+.form-card textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-bottom: 16px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease;
+}
+
+.form-card input:focus,
+.form-card textarea:focus {
+  border-color: #d29300;
+  outline: none;
+}
+
+.form-card button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #7c6700;
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.form-card button:hover {
+  background: #d29300;
+}
+
+.form-card p {
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: 12px;
+}
+
+.form-card a {
+  color: #7c6700;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.form-card a:hover {
+  text-decoration: underline;
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 900px) {
+  .topbar,
+  .main-header,
+  .main-nav,
+  .categories,
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .main-header {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .search-bar {
+    margin: 10px 0;
+    max-width: 100%;
+  }
+
+  .hero {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px 16px;
+  }
+
+  .hero-right {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .hero-right img {
+    max-width: 320px;
+  }
+
+  .container {
+    margin: 20px auto;
+  }
+
+  .page-form {
+    padding: 20px 16px;
+  }
+}

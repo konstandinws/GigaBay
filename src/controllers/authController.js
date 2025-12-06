@@ -30,4 +30,15 @@ const register = async (req, res) => {
   }
 };
 
-export default { login, register };
+const me = async (req, res) => {
+  try {
+    res.status(200).json({
+      status: "success",
+      user: req.user
+    });
+  } catch (error) {
+    res.status(500).json({message: "erreur du serveur"});
+  }
+}
+
+export default { login, register, me };
