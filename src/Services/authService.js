@@ -37,6 +37,7 @@ class AuthService {
         //stocker le refresh token dans la DB
         await Token.create({ jti: jti, userId: user.id, exp: exp });
 
+        //supprimer pasword avant d'envoyer le user
         const { password: _, ...userWithoutPassword } = user;
 
         return { user: userWithoutPassword, accessToken, refreshToken };
@@ -49,6 +50,7 @@ class AuthService {
             throw new Error("Cet email est déjà utilisé.");
         }
 
+        //généfrer un hash sécurisé pour le mot de passe
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(userData.password, salt);
 

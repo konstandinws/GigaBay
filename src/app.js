@@ -6,7 +6,11 @@ import profileRoutes from "./routes/profileRoutes.js"
 import cors from "cors";
 import "./config/db.js";
 import cookieParser from "cookie-parser";
+import path from "path";
+import { fileURLToPath } from "url";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const app = express();
 
 // Middlewares globaux
@@ -25,6 +29,9 @@ app.use("/api/auctions", auctionRoutes);
 app.use("/api/auth", authRoutes);
 
 app.use("/api/profile", profileRoutes)
+app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
+
+
 
 
 
