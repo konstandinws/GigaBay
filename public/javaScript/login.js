@@ -1,9 +1,4 @@
-// js/login.js
-
-const API_BASE_URL = "http://localhost:3000"; // adapte si besoin
-
-// juste pour vérifier que le fichier est bien chargé
-console.log("✅ login.js chargé");
+import AuthService from "./services/auth.service.js";
 
 function getAuctionIdFromUrl() {
   const params = new URLSearchParams(window.location.search);
@@ -23,21 +18,7 @@ form.addEventListener("submit", async function (e) {
   const password = passwordInput.value;
 
   try {
-    const response = await fetch(API_BASE_URL + "/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || "Email ou mot de passe incorrect");
-    }
-
-    // on stocke user + token
-    localStorage.setItem("user", JSON.stringify(data.user));
-    localStorage.setItem("token", data.token);
+    await AuthService.login(email, password);
 
     const auctionId = getAuctionIdFromUrl();
     if (auctionId) {
@@ -47,6 +28,18 @@ form.addEventListener("submit", async function (e) {
       window.location.href = "index.html";
     }
   } catch (err) {
-    errorEl.textContent = err.message;
+    if (err.status === 401) {
+        errorEl.textContent = "Email ou mot de passe incorrect.";
+        passwordInput.value = ""; // On vide le mot de passe pour qu'il réessaie
+        passwordInput.focus();    // On remet le curseur dedans
+    } 
+    // Si le serveur est en panne (500)
+    else if (err.status === 500) {
+        errorEl.textContent = "Serveur indisponible, réessayez plus tard.";
+    }
+    // Sinon, on affiche le message technique envoyé par le backend
+    else {
+        errorEl.textContent = err.message;
+    }
   }
 });
