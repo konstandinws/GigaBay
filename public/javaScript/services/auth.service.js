@@ -1,4 +1,5 @@
 import { apiFetch } from "../api/client.js";
+import { parseJwt } from "../utils/jwt.js";
 
 class AuthService {
     static async login(email, password) {
@@ -7,10 +8,9 @@ class AuthService {
             body: JSON.stringify({ email, password })
         });
 
-        // Si succès, on sauvegarde tout de suite
         if (data.token) {
             localStorage.setItem("token", data.token);
-            localStorage.setItem("user", JSON.stringify(data.user));
+            // On ne stocke plus l'user, juste le token suffit !
         }
         return data.user;
     }
@@ -24,13 +24,22 @@ class AuthService {
 
     static logout() {
         localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        window.location.href = "login.html";
+        // Plus besoin de remove "user" car on ne l'utilise plus
+        window.location.href = "/login";
     }
 
     static getCurrentUser() {
-        const userStr = localStorage.getItem("user");
-        return userStr ? JSON.parse(userStr) : null;
+        const token = localStorage.getItem("token");
+        if (!token) return null;
+
+        const decoded = parseJwt(token); 
+
+        if (decoded.exp && decoded.exp * 1000 < Date.now()) {
+            this.logout();
+            return null;
+        }
+
+        return decoded;
     }
 }
 

@@ -33,7 +33,7 @@ class AuthService {
         // Générer le Token 
         const token = jwt.sign(
             { 
-                id: user.id, name: user.name 
+                id: user.id, username: user.username, email: user.email
             }, // Ce qu'on met dans le token
             SECRET_KEY,                       // La clé pour signer
             { 
