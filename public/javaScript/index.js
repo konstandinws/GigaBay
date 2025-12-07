@@ -1,10 +1,6 @@
-const API_BASE_URL = "http://localhost:3000";
+import AuctionService from "./services/auction.service.js"; 
 
 let allAuctions = []; // toutes les enchères récupérées
-
-function getToken() {
-  return localStorage.getItem("token");
-}
 
 // format HH:MM:SS à partir de end_date
 function formatTime(endDate) {
@@ -169,8 +165,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const errorEl = document.getElementById("error-message");
 
   try {
-    const response = await fetch(API_BASE_URL + "/api/auctions");
-    const data = await response.json();
+    const response = await AuctionService.getAll();
 
     if (!response.ok) {
       throw new Error(data.message || "Erreur API");
