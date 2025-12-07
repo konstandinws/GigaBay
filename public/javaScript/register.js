@@ -1,8 +1,5 @@
-// js/register.js
-
-const API_BASE_URL = "http://localhost:3000";
-
-console.log("register.js chargé");
+import AuthService from "./services/auth.service.js";
+import Validator from "./utils/validator.js";
 
 function getAuctionIdFromUrl() {
   const params = new URLSearchParams(window.location.search);
@@ -33,17 +30,10 @@ form.addEventListener("submit", async function (e) {
   const password = passwordInput.value;
 
   try {
-    const response = await fetch(API_BASE_URL + "/api/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, email, password }),
-    });
+    
+    Validator.validateRegistration(username, email, password);
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || "Erreur lors de l'inscription");
-    }
+    const response = await AuthService.register(username, email, password);
 
     successEl.textContent =
       "Compte créé avec succès, tu peux te connecter.";
