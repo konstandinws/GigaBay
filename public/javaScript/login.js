@@ -25,7 +25,7 @@ form.addEventListener("submit", async function (e) {
       window.location.href =
         "index.html?auctionId=" + encodeURIComponent(auctionId);
     } else {
-      window.location.href = "index.html";
+      window.location.href = "/";
     }
   } catch (err) {
     if (err.status === 401) {

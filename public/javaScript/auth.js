@@ -1,53 +1,50 @@
-const API_BASE_URL = "http://localhost:3000";
+import AuthService from "./services/auth.service.js"; 
 
-export async function getCurrentUser() {
-    const token = localStorage.getItem("token");
-    if (!token) {
-        return null;
-    }
+// Fonction principale
+export function updateHeader() {
+    // 1. On cible la zone où sont les boutons
+    const headerActions = document.querySelector(".header-actions");
+    if (!headerActions) return; // Sécurité si la div n'existe pas
 
-    try {
+    // 2. On récupère l'utilisateur en mémoire
+    const user = AuthService.getCurrentUser();
 
-        const res = await fetch(API_BASE_URL + "/api/auth/me", {
-            headers: {Authorization: `Bearer ${token}`},    
-        });
+    // 3. SCÉNARIO : CONNECTÉ ✅
+    if (user) {
+        // On remplace le HTML par le bouton Profil et Déconnexion
+        // J'utilise user.username, ou user.email si username n'existe pas
+        const displayName = user.username || "Mon Profil";
 
-        if (!res.ok) { return null; }
-
-        const data =  await res.json();
-        return data.user;
-
-
-    } catch (e) { return null; } 
-}
-
-export async function updateHeader() {
-    const header = document.querySelector(".header-actions");
-    if (!header) return;
-
-    const user = await getCurrentUser();
-
-    if (!user) {
-
-        header.innerHTML = `
-            <a href="login.html" class="btn-connexion">👤 Connexion</a>
-            <a href="register.html" class="btn-inscription">🧾 Inscription</a>
-            <div class="lang">🇫🇷 <span>French</span></div>
+        headerActions.innerHTML = `
+            <a href="/profile" class="btn-connexion" style="background-color: #447c00;">
+                👤 ${displayName}
+            </a>
+            <button id="logout-btn" class="btn-inscription" style="cursor: pointer;">
+                🚪 Déconnexion
+            </button>
+            <div class="lang">
+                🇫🇷 <span>French</span>
+            </div>
         `;
-        return;
+
+        // On active le bouton déconnexion qu'on vient de créer
+        document.getElementById("logout-btn").addEventListener("click", () => {
+            AuthService.logout(); 
+        });
+    } 
+    
+    // 4. SCÉNARIO : PAS CONNECTÉ ❌
+    else {
+        // On remet les boutons par défaut
+        headerActions.innerHTML = `
+            <a href="/login" class="btn-connexion">👤 Connexion</a>
+            <a href="/register" class="btn-inscription">🧾 Inscription</a>
+            <div class="lang">
+                🇫🇷 <span>French</span>
+            </div>
+        `;
     }
-
-    header.innerHTML = `
-        <a href="profile.html" class="btn-connexion">👤 ${user.email}</a>
-        <button id="logout-btn" class="btn-inscription">🚪 Déconnexion</button>
-        <div class="lang">🇫🇷 <span>French</span></div>
-    `;
-
-    document.getElementById("logout-btn").addEventListener("click", () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        window.location.href = "login.html";
-    });
 }
 
+// Lancer la fonction dès que la page est chargée
 document.addEventListener("DOMContentLoaded", updateHeader);

@@ -43,7 +43,7 @@ form.addEventListener("submit", async function (e) {
         window.location.href =
           "login.html?auctionId=" + encodeURIComponent(auctionId);
       } else {
-        window.location.href = "login.html";
+        window.location.href = "/login";
       }
     }, 800);
   } catch (err) {
