@@ -39,7 +39,7 @@ const register = async (req, res) => {
             status: "success",
             message: "Compte créé avec succès !",
             user: result.newUser,
-            accessToken: result.accessToken 
+            accessToken: result.accessToken ,
         });
     } catch (error) {
         res.status(400).json({ message: error.message });

@@ -37,6 +37,7 @@ form.addEventListener("submit", async function (e) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, email, password }),
+      credentials: "include"
     });
 
     const data = await response.json();
@@ -44,6 +45,8 @@ form.addEventListener("submit", async function (e) {
     if (!response.ok) {
       throw new Error(data.message || "Erreur lors de l'inscription");
     }
+
+    localStorage.setItem("token", data.accessToken);
 
     successEl.textContent =
       "Compte créé avec succès, tu peux te connecter.";

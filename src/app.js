@@ -18,10 +18,8 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
-// Test route
-app.get("/", (req, res) => {
-    res.send("API OK");
-});
+app.use(express.static(path.join(__dirname, "..", "public"))); // CSS, JS, images
+app.use("/", express.static(path.join(__dirname, "..", "public/html"))); // HTML
 
 // Use routes
 app.use("/api/auctions", auctionRoutes);
@@ -29,11 +27,8 @@ app.use("/api/auctions", auctionRoutes);
 app.use("/api/auth", authRoutes);
 
 app.use("/api/profile", profileRoutes)
+
 app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
-
-
-
-
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {

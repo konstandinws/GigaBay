@@ -44,7 +44,7 @@ db.serialize(() => { //éxécute les requetes dans l'ordre
             current_price REAL NOT NULL,
             end_date DATETIME NOT NULL,
             user_id INTEGER NOT NULL,
-
+            image_url TEXT,
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         )
     `);
@@ -59,6 +59,16 @@ db.serialize(() => { //éxécute les requetes dans l'ordre
             auction_id INTEGER NOT NULL,
 
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY (auction_id) REFERENCES auctions(id) ON DELETE CASCADE
+        )
+    `);
+
+    db.run(`
+        CREATE TABLE IF NOT EXISTS images (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            filename TEXT NOT NULL,
+            auction_id INTEGER NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (auction_id) REFERENCES auctions(id) ON DELETE CASCADE
         )
     `);
