@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Détails de l'enchère</title>
+  <link rel="stylesheet" href="/css/index.css">
+  <script type="module" src="/javaScript/auction.js"></script>
+  <script type="module" src="/javaScript/auth.js"></script>
+</head>
+<body>
+
+    <header class="main-header">
+    <div class="logo">
+      <img src="../img/logo.png" alt="Logo" />
+      <span class="logo-text"><b>Nom</b>Du Site</span>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" placeholder="Rechercher..." />
+      <button type="button">🔍</button>
+    </div>
+
+    <div class="header-actions">
+      <a href="/login" class="btn-connexion">
+        👤 Connexion
+      </a>
+      <a href="/register" class="btn-inscription">
+        🧾 Inscription
+      </a>
+      <div class="lang">
+        🇫🇷 <span>French</span>
+      </div>
+    </div>
+  </header>
+
+  <nav class="main-nav">
+    <a href="/" class="nav-link">Enchères</a>
+    <a href="#" class="nav-link">Lots</a>
+    <a href="/new-auction" class="nav-link">Mettre aux enchères</a>
+    <a href="#" class="nav-link">À propos</a>
+    <a href="#" class="nav-link">Contact</a>
+  </nav>
+
+  <main class="container" style="margin-top: 40px;">
+    
+    <a href="/" style="display:inline-block; margin-bottom:20px; color:#666; text-decoration:none;">
+      &larr; Retour à la liste
+    </a>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;">
+      
+      <div class="auction-gallery">
+        <div id="main-image-container" style="height: 400px; background: #eee; border-radius: 12px; overflow: hidden; margin-bottom: 10px;">
+           <img id="main-image" src="" alt="Image principale" style="width:100%; height:100%; object-fit:cover;">
+        </div>
+        <div id="thumbnails" style="display: flex; gap: 10px; overflow-x: auto;"></div>
+      </div>
+
+      <div class="auction-info-panel" style="background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+        
+        <h1 id="auction-title" style="margin-top: 0; color: #0d3b66;">Chargement...</h1>
+        
+        <p id="auction-description" style="color: #555; line-height: 1.6; margin-bottom: 20px;"></p>
+
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; border: 1px solid #eee;">
+            <div style="font-size: 0.9rem; color: #888;">Prix actuel</div>
+            <div id="current-price" style="font-size: 2.5rem; font-weight: bold; color: #447c00;">0 €</div>
+            
+            <div style="margin-top: 10px; display: flex; align-items: center; gap: 8px;">
+                <span>⏱ Fin de l'enchère :</span>
+                <span id="auction-timer" style="font-weight: bold; color: #d32f2f;">--h --m --s</span>
+            </div>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <label for="bid-amount" style="display:block; font-weight:600; margin-bottom:8px;">Votre offre (€)</label>
+            <div style="display: flex; gap: 10px;">
+                <input type="number" id="bid-amount" placeholder="Montant..." style="flex:1; padding: 12px; border-radius: 8px; border: 1px solid #ccc;">
+                <button id="btn-place-bid" style="background: #7c6700; color: white; border: none; padding: 0 24px; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                    Enchérir
+                </button>
+            </div>
+            <p id="bid-error" class="error" style="margin-top: 10px;"></p>
+            <p id="bid-success" class="success" style="margin-top: 10px;"></p>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>

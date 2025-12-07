@@ -1,12 +1,43 @@
 import AuctionService from "./services/auction.service.js";
-import { API_BASE_URL } from "./api/client.js"; // <--- 1. Import ajouté
+import { API_BASE_URL } from "./api/client.js";
 
 let allAuctions = [];
+let timerInterval = null;
 
-function formatTime(endDate) {
-  const d = new Date(endDate);
-  if (isNaN(d.getTime())) return endDate || "";
-  return d.toLocaleTimeString("fr-FR", { hour12: false });
+function getRemainingTime(endDate) {
+  const total = Date.parse(endDate) - Date.parse(new Date());
+  if (total <= 0) {
+      return { total, text: "Terminé", isFinished: true };
+  }
+  const seconds = Math.floor((total / 1000) % 60);
+  const minutes = Math.floor((total / 1000 / 60) % 60);
+  const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
+  const days = Math.floor(total / (1000 * 60 * 60 * 24));
+
+  let text = "";
+  if (days > 0) text += `${days}j `;
+  text += `${hours}h ${minutes}m ${seconds}s`;
+  return { total, text, isFinished: false };
+}
+
+function startCountdown() {
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+        const timerElements = document.querySelectorAll(".live-timer");
+        timerElements.forEach(el => {
+            const endDate = el.dataset.end;
+            const timeData = getRemainingTime(endDate);
+            el.textContent = timeData.text;
+            
+            // Gestion de la couleur du texte
+            if (timeData.isFinished) {
+                el.style.color = "#e53935"; // Rouge
+                el.style.fontWeight = "bold";
+            } else if (timeData.total < 3600000) { 
+                el.style.color = "#d32f2f"; // Orange si < 1h
+            }
+        });
+    }, 1000);
 }
 
 function displayAuctions(list) {
@@ -14,144 +45,142 @@ function displayAuctions(list) {
   container.innerHTML = "";
 
   if (!list || list.length === 0) {
-    container.innerHTML = "<p>Aucune enchère trouvée.</p>";
+    container.innerHTML = `<div class="empty-state" style="grid-column: 1/-1;"><p>Aucune enchère trouvée.</p></div>`;
     return;
   }
 
-  list.forEach((a) => {
+  list.forEach((auction) => {
     const card = document.createElement("div");
     card.className = "card auction-card";
+    
+    // === RENDRE LA CARTE CLIQUABLE ===
+    card.style.cursor = "pointer";
+    card.addEventListener("click", (event) => {
+        // Si on clique sur une flèche du carrousel, on ne change pas de page
+        if (event.target.classList.contains('carousel-btn')) return;
+        
+        // Sinon, redirection vers la page détail
+        window.location.href = `/auction?id=${auction.id}`;
+    });
 
-    // --- IMAGE ---
-    if (a.image_url) {
-      const img = document.createElement("img");
-      // 2. Correction URL Image : On veut "localhost:3000/uploads" et pas ".../api/uploads"
-      const siteUrl = API_BASE_URL.replace("/api", ""); 
-      img.src = siteUrl + a.image_url;
-      img.alt = a.title;
-      card.appendChild(img);
+    // --- CARROUSEL ---
+    let imagesList = [];
+    if (auction.images && auction.images.length > 0) {
+        imagesList = auction.images.map(filename => `/uploads/${filename}`);
+    } else if (auction.image_url) {
+        const siteUrl = API_BASE_URL.replace("/api", "");
+        imagesList = [siteUrl + auction.image_url];
     }
 
-    // --- BADGE ---
-    const badge = document.createElement("div");
-    badge.className = "auction-badge";
-    const highest = Number(a.current_price) > Number(a.starting_price);
-    
-    // Petite amélioration d'affichage
-    badge.textContent = highest 
-        ? `Enchère : ${a.current_price} €` 
-        : `Départ : ${a.starting_price} €`;
+    let carouselHtml = '';
+    if (imagesList.length === 0) {
+        carouselHtml = `<div class="card-image-container" style="display:flex;align-items:center;justify-content:center;color:#888;">Pas d'image</div>`;
+    } else {
+        const imgsHtml = imagesList.map((src, index) => 
+            `<img src="${src}" class="${index === 0 ? 'active' : ''}" alt="${auction.title}">`
+        ).join("");
         
-    card.appendChild(badge);
+        const arrowsHtml = imagesList.length > 1 ? `
+            <button class="carousel-btn prev" onclick="moveSlide(this, -1)">‹</button>
+            <button class="carousel-btn next" onclick="moveSlide(this, 1)">›</button>
+        ` : '';
 
-    // --- CORPS ---
-    const body = document.createElement("div");
-    body.className = "auction-body";
+        carouselHtml = `
+            <div class="card-image-container" data-total="${imagesList.length}">
+                ${imgsHtml}
+                ${arrowsHtml}
+            </div>
+        `;
+    }
 
-    const title = document.createElement("div");
-    title.className = "auction-title";
-    title.textContent = a.title;
-    body.appendChild(title);
+    // --- PRIX & BADGES ---
+    const currentPrice = parseFloat(auction.current_price);
+    const startPrice = parseFloat(auction.starting_price);
+    const isBiddingStarted = currentPrice > startPrice;
+    const badgeText = isBiddingStarted ? `Enchère : ${currentPrice} €` : `Mise à prix : ${startPrice} €`;
+    const badgeClass = isBiddingStarted ? "auction-badge" : "auction-badge starting";
 
-    const lotRow = document.createElement("div");
-    lotRow.className = "auction-lot-row";
-    lotRow.innerHTML = `
-        <div class="auction-lot-line"></div>
-        <div class="auction-lot-box">Lot: ${a.id}</div>
-        <div class="auction-lot-line"></div>
-    `;
-    body.appendChild(lotRow);
+    const timeInfo = getRemainingTime(auction.end_date);
 
-    const bidsP = document.createElement("p");
-    bidsP.className = "auction-bids";
-    bidsP.textContent = "Offres : " + (a.bids_count || 0);
-    body.appendChild(bidsP);
+    // --- HTML DE LA CARTE ---
+    // J'ai retiré le <button> du footer et j'ai centré le timer.
+    card.innerHTML = `
+        ${carouselHtml}
+        <div class="${badgeClass}">${badgeText}</div>
+        
+        <div class="auction-body">
+            <div class="auction-title">${auction.title}</div>
+            <div class="auction-lot-row">
+                <div class="auction-lot-line"></div>
+                <div class="auction-lot-box">Lot n°${auction.id}</div>
+                <div class="auction-lot-line"></div>
+            </div>
+        </div>
 
-    card.appendChild(body);
-
-    // --- FOOTER ---
-    const footer = document.createElement("div");
-    footer.className = "card-footer";
-    footer.innerHTML = `
-        <div class="auction-time">
-            <div class="auction-clock-icon">⏱</div>
-            <span>${formatTime(a.end_date)}</span>
+        <div class="card-footer" style="justify-content: center; padding-top: 15px; padding-bottom: 15px;">
+            <div class="auction-time">
+                <div class="auction-clock-icon">⏱</div>
+                <span class="live-timer" data-end="${auction.end_date}">
+                    ${timeInfo.text}
+                </span>
+            </div>
         </div>
     `;
 
-    const bidBtn = document.createElement("button");
-    bidBtn.textContent = "Enchérir";
-    
-    // --- ACTION ENCHÉRIR ---
-    bidBtn.addEventListener("click", async function () {
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        // 3. Correction lien : "/login" au lieu de "login.html"
-        window.location.href = "/login?auctionId=" + encodeURIComponent(a.id);
-        return;
-      }
-
-      const input = prompt(`Votre enchère (actuellement ${a.current_price} €) :`);
-      if (input === null) return;
-
-      const amount = parseFloat(input.replace(",", "."));
-      if (isNaN(amount)) {
-        alert("Montant invalide.");
-        return;
-      }
-
-      try {
-        await AuctionService.placeBid(a.id, amount);
-        alert("Enchère placée avec succès !");
-        window.location.reload(); 
-      } catch (err) {
-        console.error(err);
-        alert(err.message || "Erreur lors de l'enchère");
-      }
-    });
-
-    footer.appendChild(bidBtn);
-    card.appendChild(footer);
     container.appendChild(card);
   });
+
+  startCountdown();
 }
 
-// --- CHARGEMENT INITIAL ---
-document.addEventListener("DOMContentLoaded", async () => {
-  const errorEl = document.getElementById("error-message");
+// Fonction Slider (Globale)
+window.moveSlide = function(btn, direction) {
+    event.stopPropagation(); // Empêche le clic de rediriger
+    const container = btn.closest(".card-image-container");
+    const images = container.querySelectorAll("img");
+    let activeIndex = 0;
+    images.forEach((img, index) => {
+        if (img.classList.contains("active")) {
+            activeIndex = index;
+            img.classList.remove("active");
+        }
+    });
+    let newIndex = activeIndex + direction;
+    if (newIndex < 0) newIndex = images.length - 1;
+    if (newIndex >= images.length) newIndex = 0;
+    images[newIndex].classList.add("active");
+};
 
-  try {
-    const response = await AuctionService.getAll();
-    
-    // Note : On ne vérifie plus !response.ok ici car le Service renvoie directement les données
-    allAuctions = response.data || [];
-    displayAuctions(allAuctions);
+async function loadAllAuctions() {
+    try {
+        const response = await AuctionService.getAll();
+        allAuctions = response.data || [];
+        displayAuctions(allAuctions);
+    } catch (err) {
+        console.error("Erreur chargement:", err);
+        document.getElementById("auctions-list").innerHTML = `<p class="error">Impossible de charger les enchères.</p>`;
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadAllAuctions();
 
     // Filtres Catégories
     const categoryCards = document.querySelectorAll(".category-card");
     categoryCards.forEach((card) => {
-      card.addEventListener("click", () => {
-        const category = (card.dataset.category || "").toLowerCase();
-        
-        categoryCards.forEach((c) => c.classList.remove("active"));
-        card.classList.add("active");
-
-        if (!category) {
-          displayAuctions(allAuctions);
-          return;
-        }
-
-        const filtered = allAuctions.filter((a) => {
-          const txt = (a.title + " " + (a.description || "")).toLowerCase();
-          return txt.includes(category);
+        card.addEventListener("click", () => {
+            categoryCards.forEach(c => c.classList.remove("active"));
+            card.classList.add("active");
+            const category = (card.dataset.category || "").toLowerCase();
+            if (!category) {
+                displayAuctions(allAuctions);
+            } else {
+                const filtered = allAuctions.filter(a => {
+                    const content = (a.title + " " + (a.description || "")).toLowerCase();
+                    return content.includes(category);
+                });
+                displayAuctions(filtered);
+            }
         });
-        displayAuctions(filtered);
-      });
     });
-
-  } catch (err) {
-    console.error(err);
-    if (errorEl) errorEl.textContent = "Impossible de charger les enchères.";
-  }
 });

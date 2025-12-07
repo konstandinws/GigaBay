@@ -19,4 +19,8 @@ router.get("/new-auction", (req, res) => {
     res.sendFile("new-auction.html", { root: "public/html" });
 });
 
+router.get("/auction", (req, res) => {
+    res.sendFile("auction.html", { root: "public/html" });
+});
+
 export default router;

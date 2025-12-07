@@ -5,6 +5,10 @@ class AuctionService {
         return await apiFetch("/auctions");
     }
 
+    static async getOne(id) {
+        return await apiFetch(`/auctions/${id}`);
+    }
+
     static async create(auctionData) {
         return await apiFetch("/auctions", {
             method: "POST",
@@ -26,6 +30,15 @@ class AuctionService {
             headers: { "Authorization": `Bearer ${token}` },
             body: formData
         });
+
+        if (!response.ok) {
+        try {
+                const errorData = await response.json();
+                errorMessage = errorData.error || errorData.message || errorMessage;
+            } catch(e) { /* Si le serveur ne renvoie pas de JSON, on garde le message par défaut */ }
+            
+            throw new Error(errorMessage);
+        }
         return await response.json();
     }
 }

@@ -556,6 +556,17 @@ body {
   text-decoration: underline;
 }
 
+.card {
+    transition: all 0.3s ease;
+}
+
+.card.auction-card:hover {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+  transform: scale(1.05) translateY(-5px);
+  z-index: 10;
+  cursor: pointer;
+}
+
 /* =========================
    RESPONSIVE
    ========================= */
@@ -603,3 +614,4 @@ body {
     padding: 20px 16px;
   }
 }
+
