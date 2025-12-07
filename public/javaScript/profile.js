@@ -2,21 +2,10 @@ import AuthService from "./services/auth.service.js";
 import AuctionService from "./services/auction.service.js";
 import { API_BASE_URL } from "./api/client.js";
 
-// Empêche le retour arrière après déconnexion (Cache)
-window.addEventListener("pageshow", () => {
-    const user = AuthService.getCurrentUser();
-    if (!user) {
-        window.location.replace("/login"); // .replace empêche de revenir à la page précédente
-    }
-});
 
 document.addEventListener("DOMContentLoaded", async () => {
     // Vérification Connexion
     const user = AuthService.getCurrentUser();
-    if (!user) {
-        window.location.replace("/login");
-        return;
-    }
 
     // Remplissage des infos (Avec les bons IDs du nouveau HTML)
     const nameEl = document.getElementById("user-name");

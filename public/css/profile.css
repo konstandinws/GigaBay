@@ -1,0 +1,278 @@
+.profile-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* --- CARDS GÉNÉRIQUES --- */
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+/* --- 1. HEADER PROFIL --- */
+.profile-header {
+  padding: 30px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.profile-avatar {
+  width: 90px;
+  height: 90px;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  color: white;
+  flex-shrink: 0; /* Empêche l'avatar de s'écraser */
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.profile-info h1 {
+  margin: 0 0 8px 0;
+  font-size: 1.8rem;
+  color: #111827;
+}
+
+.profile-email {
+  color: #6b7280;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* --- 2. BALANCE CARD --- */
+.balance-card {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  padding: 30px;
+}
+
+.balance-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.balance-header h2 {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0;
+  opacity: 0.9;
+}
+
+.balance-amount {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 20px 0;
+}
+
+/* --- 3. ONGLETS (TABS) --- */
+.tabs-list {
+  display: flex;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tab-trigger {
+  flex: 1;
+  padding: 16px;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #6b7280;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.tab-trigger:hover {
+  background-color: #f9fafb;
+  color: #111827;
+}
+
+.tab-trigger.active {
+  color: #2563eb;
+  border-bottom-color: #2563eb;
+}
+
+.tab-content {
+  display: none;
+  padding: 24px;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.tab-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* --- BOUTONS --- */
+.btn-outline {
+  padding: 8px 16px;
+  border: 1px solid #d1d5db;
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #374151;
+  transition: all 0.2s;
+}
+
+.btn-destructive {
+  padding: 10px 20px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+  max-width: 140px;
+}
+
+.btn-destructive:hover {
+  background: #dc2626;
+}
+
+.btn-secondary {
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.btn-small {
+  padding: 6px 12px;
+  background: #2563eb;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+/* --- LISTE DES ENCHÈRES --- */
+.auction-item {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  transition: background 0.2s;
+  align-items: center; /* Alignement vertical */
+}
+
+.auction-item:hover {
+  background: #f9fafb;
+}
+
+.auction-item img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #e5e7eb;
+  flex-shrink: 0;
+}
+
+.auction-info {
+  flex: 1;
+}
+
+.auction-info h4 {
+  margin: 0 0 4px 0;
+  font-size: 1.1rem;
+}
+
+.empty-state {
+  text-align: center;
+  color: #9ca3af;
+  padding: 20px;
+}
+
+/* =========================================
+   📱 RESPONSIVE DESIGN (MOBILE & TABLETTE)
+   ========================================= */
+
+@media (max-width: 768px) {
+  
+  /* Conteneur global */
+  .profile-container {
+    margin: 20px auto;
+    padding: 0 16px;
+    gap: 16px;
+  }
+
+  /* 1. Header Profil : Mode colonne centré */
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+    padding: 24px 16px;
+    gap: 16px;
+  }
+
+  .profile-info {
+    width: 100%;
+  }
+
+  .profile-email {
+    justify-content: center; /* Centre l'email et l'icône */
+  }
+
+  /* Le bouton déconnexion prend toute la largeur */
+  .btn-destructive {
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  /* 2. Solde */
+  .balance-card {
+    padding: 20px;
+  }
+
+  .balance-amount {
+    font-size: 2rem; /* Texte un peu moins gros sur mobile */
+  }
+
+  .balance-card button {
+    width: 100%; /* Bouton "Ajouter fonds" pleine largeur */
+  }
+
+  /* 3. Onglets et Contenu */
+  .tab-content {
+    padding: 16px;
+  }
+
+  /* En-tête de l'onglet : Titre + Bouton l'un sous l'autre */
+  .tab-header {
+    flex-direction: column;
+    align-items: stretch; 
+  }
+}

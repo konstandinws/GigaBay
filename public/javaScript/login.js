@@ -1,8 +1,8 @@
 import AuthService from "./services/auth.service.js";
 
-function getAuctionIdFromUrl() {
+function getQueryParam(param) {
   const params = new URLSearchParams(window.location.search);
-  return params.get("auctionId");
+  return params.get(param);
 }
 
 const form = document.getElementById("login-form");
@@ -20,10 +20,16 @@ form.addEventListener("submit", async function (e) {
   try {
     await AuthService.login(email, password);
 
-    const auctionId = getAuctionIdFromUrl();
-    if (auctionId) {
+    const redirectUrl = getQueryParam("redirect");
+
+    const auctionId = getQueryParam("auctionId");
+
+    if(redirectUrl){
+      window.location.href = redirectUrl;
+    }
+    else if (auctionId) {
       window.location.href =
-        "index.html?auctionId=" + encodeURIComponent(auctionId);
+        "/?auctionId=" + encodeURIComponent(auctionId);
     } else {
       window.location.href = "/";
     }
