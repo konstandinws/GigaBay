@@ -15,11 +15,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Test route
-app.get("/", (req, res) => {
-    res.send("API OK");
-});
-
 // Fichiers statiques (html, css, js, images, etc.)
 app.use(express.static(path.join(__dirname, "..", "public")));
 
