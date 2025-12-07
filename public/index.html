@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Enchères</title>
+  <link rel="stylesheet" href="../css/index.css" />
+  <!-- <script type="module" src="../javaScript/auth.js" defer></script> -->
+</head>
+<body>
+
+  <!-- ===== BARRE DE CONTACT ===== -->
+  <div class="topbar">
+    <div class="contact-info">
+      <span>📞 (0032) 0 000 00 00</span>
+      <span>✉️ exemple@nnnn.be</span>
+    </div>
+  </div>
+
+  <!-- ===== HEADER PRINCIPAL ===== -->
+  <header class="main-header">
+    <div class="logo">
+      <img src="../img/logo.png" alt="Logo" />
+      <span class="logo-text"><b>Nom</b>Du Site</span>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" placeholder="Rechercher..." />
+      <button type="button">🔍</button>
+    </div>
+
+    <div class="header-actions">
+      <a href="/login" class="btn-connexion">
+        👤 Connexion
+      </a>
+      <a href="/register" class="btn-inscription">
+        🧾 Inscription
+      </a>
+      <div class="lang">
+        🇫🇷 <span>French</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== NAVIGATION PRINCIPALE ===== -->
+  <nav class="main-nav">
+    <a href="/" class="nav-link active">Enchères</a>
+    <a href="#" class="nav-link">Lots</a>
+    <a href="new-auction.html" class="nav-link">Mettre aux enchères</a>
+    <a href="#" class="nav-link">À propos</a>
+    <a href="#" class="nav-link">Contact</a>
+  </nav>
+
+    <!-- ===== HERO (BANDEAU PRINCIPAL) ===== -->
+  <section class="hero">
+    <div class="hero-left">
+      <h1>Ventes aux enchères en ligne</h1>
+      <p>
+        Consulte les ventes en cours, trouve ta prochaine machine ou véhicule,
+        ou mets tes propres objets aux enchères.
+      </p>
+      <a href="new-auction.html" class="btn-inscription">
+        Mettre un objet en vente
+      </a>
+    </div>
+    <div class="hero-right">
+      <img src="../img/hero.jpg" alt="Illustration d'enchères" />
+    </div>
+  </section>
+
+  <!-- ===== SECTION CATÉGORIES ===== -->
+  <section class="categories">
+    <div class="categories-inner">
+      <button class="cat-arrow cat-arrow-left">‹</button>
+
+      <div class="categories-list">
+        <div class="category-card" data-category="transport">
+  <div class="category-icon">🚚</div>
+  <div class="category-label">Transport interne</div>
+</div>
+
+<div class="category-card" data-category="nacelle">
+  <div class="category-icon">🪜</div>
+  <div class="category-label">Nacelles élévatrices</div>
+</div>
+
+<div class="category-card" data-category="agriculture">
+  <div class="category-icon">🚜</div>
+  <div class="category-label">Agriculture</div>
+</div>
+
+<div class="category-card" data-category="terrassement">
+  <div class="category-icon">🛠️</div>
+  <div class="category-label">Machines de terrassement</div>
+</div>
+
+<div class="category-card" data-category="camion">
+  <div class="category-icon">🚛</div>
+  <div class="category-label">Camions & remorques</div>
+</div>
+
+<div class="category-card" data-category="vehicule">
+  <div class="category-icon">🚗</div>
+  <div class="category-label">Véhicules</div>
+</div>
+
+      </div>
+
+      <button class="cat-arrow cat-arrow-right">›</button>
+    </div>
+
+    <div class="categories-dots">
+      <span class="dot active"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+  </section>
+
+  <!-- ===== CONTENU PRINCIPAL : LISTE DES ENCHÈRES ===== -->
+  <main class="container">
+    <h2 class="section-title">Enchères en cours</h2>
+    <p id="error-message" class="error"></p>
+
+    <div id="auctions-list" class="grid"></div>
+  </main>
+
+
+  <script type="module" src="../javaScript/index.js"></script>
+  <script type="module" src="../javaScript/auth.js"></script>
+</body>
+</html>

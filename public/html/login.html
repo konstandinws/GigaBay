@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Connexion</title>
   <link rel="stylesheet" href="../css/index.css" />
-  <script type="module" src="../javaScript/auth.js"></script>
 </head>
 <body>
 
@@ -30,15 +29,15 @@
     </div>
 
     <div class="header-actions">
-      <a href="login.html" class="btn-connexion">👤 Connexion</a>
-      <a href="register.html" class="btn-inscription">🧾 Inscription</a>
+      <a href="/login" class="btn-connexion">👤 Connexion</a>
+      <a href="/register" class="btn-inscription">🧾 Inscription</a>
       <div class="lang">🇫🇷 <span>French</span></div>
     </div>
   </header>
 
   <!-- ===== NAVIGATION ===== -->
   <nav class="main-nav">
-    <a href="index.html" class="nav-link">Enchères</a>
+    <a href="/" class="nav-link">Enchères</a>
     <a href="#" class="nav-link">Lots</a>
     <a href="new-auction.html" class="nav-link">Mettre aux enchères</a>
     <a href="#" class="nav-link">À propos</a>
@@ -59,10 +58,10 @@
 
       <button type="submit">Se connecter</button>
 
-      <p>Pas de compte ? <a href="register.html">S'inscrire</a></p>
+      <p>Pas de compte ? <a href="/register">S'inscrire</a></p>
     </form>
   </main>
 
-  <script src="../javaScript/login.js"></script>
+  <script type="module" src="../javaScript/login.js"></script>
 </body>
 </html>

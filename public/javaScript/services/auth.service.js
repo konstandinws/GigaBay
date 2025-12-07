@@ -1,5 +1,5 @@
 import { apiFetch } from "../api/client.js";
-import { parseJwt } from "../utils/jwt.js";
+import { parseJwt } from "../utils/jwtParser.js";
 
 class AuthService {
     static async login(email, password) {
@@ -30,7 +30,7 @@ class AuthService {
 
     static getCurrentUser() {
         const token = localStorage.getItem("token");
-        if (!token) return null;
+        if (!token) window.location.href = "/login";
 
         const decoded = parseJwt(token); 
 

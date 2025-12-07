@@ -1,23 +1,77 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Mon profil</title>
-  <link rel="stylesheet" href="../css/index.css" />
-  <script type="module" src="../javaScript/profile.js" defer></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mon Profil</title>
+  <link rel="stylesheet" href="/css/index.css" />
+  <link rel="stylesheet" href="/css/profile.css" />
+  <script type="module" src="/javaScript/profile.js"></script>
 </head>
-
 <body>
 
-  <main class="container">
-    <h2>Mon profil</h2>
+  <nav class="main-nav">
+    <a href="/" class="nav-link">Enchères</a>
+    <a href="#" class="nav-link">Lots</a>
+    <a href="/new-auction" class="nav-link">Mettre aux enchères</a>
+    <a href="#" class="nav-link">À propos</a>
+    <a href="#" class="nav-link">Contact</a>
+  </nav>
 
-    <p><b>Email :</b> <span id="profile-email"></span></p>
-    <p><b>Identifiant :</b> <span id="profile-id"></span></p>
+  <main class="profile-container">
+    
+    <div class="card profile-header">
+      <div class="profile-avatar">
+        👤 </div>
+      <div class="profile-info">
+        <h1 id="user-name">Chargement...</h1>
+        <div class="profile-email">
+          ✉️ <span id="user-email">...</span>
+        </div>
+        <button class="btn-outline">✏️ Modifier profil</button>
+      </div>
+      <button id="logout-btn" class="btn-destructive">🚪 Déconnexion</button>
+    </div>
 
-    <button id="logout-btn">Se déconnecter</button>
+    <div class="card balance-card">
+      <div class="balance-header">
+        👛 <h2>Solde du compte</h2>
+      </div>
+      <p class="balance-amount">0,00 €</p>
+      <button class="btn-secondary">Ajouter des fonds</button>
+    </div>
+
+    <div class="card tabs-card">
+      <div class="tabs-list">
+        <button class="tab-trigger active" data-target="my-auctions">
+          📦 Mes enchères
+        </button>
+        <button class="tab-trigger" data-target="bid-history">
+          📈 Historique d'enchères
+        </button>
+      </div>
+
+      <div id="my-auctions" class="tab-content active">
+        <div class="tab-header">
+          <h3>Enchères que j'ai créées</h3>
+          <a href="/new-auction" class="btn-small">➕ Nouvelle enchère</a>
+        </div>
+        <div id="created-auctions-list" class="auctions-list-container">
+          <p class="empty-state">Chargement des enchères...</p>
+        </div>
+      </div>
+
+      <div id="bid-history" class="tab-content">
+        <div class="tab-header">
+          <h3>Mes dernières offres</h3>
+        </div>
+        <div id="bids-history-list" class="auctions-list-container">
+          <p class="empty-state">Fonctionnalité à venir (nécessite une route API)</p>
+        </div>
+      </div>
+    </div>
+
   </main>
 
-  <script src="../javaScript/profile.js"></script>
 </body>
 </html>
