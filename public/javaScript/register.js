@@ -1,8 +1,10 @@
-// js/register.js
+import AuthService from "./services/auth.service.js";
+import Validator from "./utils/validator.js";
+import { loadLayout } from "./components/layout.js";
 
-const API_BASE_URL = "http://localhost:3000";
-
-console.log("register.js chargé");
+document.addEventListener("DOMContentLoaded", () => {
+  loadLayout();
+});
 
 function getAuctionIdFromUrl() {
   const params = new URLSearchParams(window.location.search);
@@ -23,6 +25,11 @@ if (auctionId) {
     "login.html?auctionId=" + encodeURIComponent(auctionId);
 }
 
+function getQueryParam(param) {
+  const params = new URLSearchParams(window.location.search);
+  return params.get(param);
+}
+
 form.addEventListener("submit", async function (e) {
   e.preventDefault();
   errorEl.textContent = "";
@@ -33,29 +40,39 @@ form.addEventListener("submit", async function (e) {
   const password = passwordInput.value;
 
   try {
-    const response = await fetch(API_BASE_URL + "/api/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, email, password }),
-    });
+    
+    Validator.validateRegistration(username, email, password);
 
-    const data = await response.json();
 
-    if (!response.ok) {
-      throw new Error(data.message || "Erreur lors de l'inscription");
+    await AuthService.register(username, email, password);
+
+    const redirectUrl = getQueryParam("redirect");
+
+    const auctionId = getQueryParam("auctionId");
+
+    if(redirectUrl){
+      window.location.href = redirectUrl;
+    }
+    else if (auctionId) {
+      window.location.href =
+        "/?auctionId=" + encodeURIComponent(auctionId);
+    } else {
+      window.location.href = "/";
     }
 
-    successEl.textContent =
-      "Compte créé avec succès, tu peux te connecter.";
+    successEl.textContent = "Compte créé ! Redirection...";
 
+    // On redirige direct vers l'accueil (ou l'enchère précédente)
     setTimeout(() => {
       if (auctionId) {
-        window.location.href =
-          "login.html?auctionId=" + encodeURIComponent(auctionId);
+        // Retour vers l'enchère qu'on voulait voir
+        window.location.href = "/auction?id=" + encodeURIComponent(auctionId);
       } else {
-        window.location.href = "login.html";
+        // Sinon accueil
+        window.location.href = "/";
       }
     }, 800);
+
   } catch (err) {
     errorEl.textContent = err.message;
   }

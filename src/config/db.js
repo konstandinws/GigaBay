@@ -32,9 +32,18 @@ db.serialize(() => { //éxécute les requetes dans l'ordre
             username TEXT UNIQUE NOT NULL,
             password TEXT NOT NULL,
             email TEXT UNIQUE NOT NULL,
+            balance REAL DEFAULT 0,  -- <--- NOUVELLE COLONNE
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
-    `);
+    `, (err) => {
+        // Petite astuce : Si la table existe déjà, cette commande ne fera rien.
+        // On force l'ajout de la colonne pour les BDD existantes (migration manuelle simple)
+        if (!err) {
+            db.run("ALTER TABLE users ADD COLUMN balance REAL DEFAULT 0", (e) => {
+                // On ignore l'erreur si la colonne existe déjà
+            });
+        }
+    });
 
     // Table AUCTIONS (Avec image_url)
     db.run(`

@@ -5,8 +5,17 @@ import AuctionService from "../Services/auctionService.js"
 
 const getAll = async (req, res) => {
     try {
-        const allAuctions = await AuctionService.getAllAuctions();
-        res.status(200).json({ data: allAuctions });
+        // On récupère page et limit de l'URL, avec des valeurs par défaut
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 12;
+
+        const allAuctions = await AuctionService.getAllAuctions(page, limit);
+        
+        res.status(200).json({ 
+            status: "success",
+            page: page,
+            data: allAuctions 
+        });
     } catch (error) {
         res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
@@ -47,12 +56,18 @@ const addOne = async (req, res) => {
 }
 
 // pour l'instant pas implementé avec sqlite
-const modify = (req, res) => {
+const modify = async (req, res) => {
     try {
         const id = req.params.id;
         const data = req.body;
 
-        const modifiedAuction = AuctionService.modifyAuction(id, data);
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({ message: "Utilisateur non identifié" });
+        }
+
+        const userId = req.user.id;
+
+        const modifiedAuction = AuctionService.modifyAuction(id, data, userId);
 
         res.status(200).json({
             status: "success",
@@ -61,7 +76,10 @@ const modify = (req, res) => {
     } catch (error){
         if (error.message.includes("introuvable")) {
             res.status(404).json({ message: error.message });
-        } else {
+        } 
+        else if (error.message.includes("interdit")) {
+            res.status(403).json({ message: error.message });
+        }else {
             res.status(500).json({ message: "Erreur serveur", error: error.message });
         }
     }
@@ -81,4 +99,18 @@ const addImages = async (req, res) => {
     }
 };
 
-export default {getAll, getOne, addOne, modify, addImages};
+const getMine = async (req, res) => {
+    try {
+        const userId = req.user.id; // L'ID vient du Token (Middleware)
+        const auctions = await AuctionService.getAuctionsByUser(userId);
+        
+        res.status(200).json({ 
+            status: "success", 
+            data: auctions 
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+}
+
+export default { getAll, getOne, addOne, modify, addImages, getMine }; 

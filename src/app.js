@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express"
 import auctionRoutes from "./routes/auctionRoutes.js"
 import authRoutes from "./routes/authRoutes.js";
+import authViewsRoutes from "./routes/auth.views.js";
 import cors from "cors";  //autorise le frontend pour plus tard
 import "./config/db.js";
 import path from "path";
@@ -15,9 +16,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+
 // Fichiers statiques (html, css, js, images, etc.)
 app.use(express.static(path.join(__dirname, "..", "public")));
 
+
+app.use("/", authViewsRoutes);
 
 // Use routes
 app.use("/api/auctions", auctionRoutes);

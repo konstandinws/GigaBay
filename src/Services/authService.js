@@ -33,7 +33,7 @@ class AuthService {
         // Générer le Token 
         const token = jwt.sign(
             { 
-                id: user.id, name: user.name 
+                id: user.id, username: user.username, email: user.email
             }, // Ce qu'on met dans le token
             SECRET_KEY,                       // La clé pour signer
             { 
@@ -54,17 +54,30 @@ class AuthService {
             throw new Error("Cet email est déjà utilisé.");
         }
 
-        //généfrer un hash sécurisé pour le mot de passe
+        // Hasher le mot de passe
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(userData.password, salt);
 
+        // Créer l'utilisateur
         const newUser = await User.create(
             userData.username, 
             userData.email, 
             hashedPassword 
         );
 
-        return newUser;
+        // --- NOUVEAU : GÉNÉRATION DU TOKEN IMMÉDIATE ---
+        const token = jwt.sign(
+            { 
+                id: newUser.id, 
+                username: newUser.username, 
+                email: newUser.email 
+            }, 
+            SECRET_KEY, 
+            { expiresIn: '1h' }
+        );
+
+        // On retourne l'user ET le token
+        return { user: newUser, token };
     }
 }
 

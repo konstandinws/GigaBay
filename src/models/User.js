@@ -34,6 +34,16 @@ class User {
             );
         });
     }
+
+    static updateBalance(id, amount) {
+        return new Promise((resolve, reject) => {
+            const sql = "UPDATE users SET balance = balance + ? WHERE id = ?";
+            db.run(sql, [amount, id], function(err) {
+                if (err) reject(err);
+                else resolve(this.changes > 0);
+            });
+        });
+    }
 }
 
 export default User;

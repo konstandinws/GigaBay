@@ -1,13 +1,13 @@
-// js/login.js
+import AuthService from "./services/auth.service.js";
+import { loadLayout } from "./components/layout.js";
 
-const API_BASE_URL = "http://localhost:3000"; // adapte si besoin
+document.addEventListener("DOMContentLoaded", () => {
+  loadLayout(); 
+});
 
-// juste pour vérifier que le fichier est bien chargé
-console.log("✅ login.js chargé");
-
-function getAuctionIdFromUrl() {
+function getQueryParam(param) {
   const params = new URLSearchParams(window.location.search);
-  return params.get("auctionId");
+  return params.get(param);
 }
 
 const form = document.getElementById("login-form");
@@ -16,37 +16,41 @@ const passwordInput = document.getElementById("login-password");
 const errorEl = document.getElementById("login-error");
 
 form.addEventListener("submit", async function (e) {
-  e.preventDefault(); // ⚠️ empêche le rechargement de la page
+  e.preventDefault(); // 
   errorEl.textContent = "";
 
   const email = emailInput.value.trim();
   const password = passwordInput.value;
 
   try {
-    const response = await fetch(API_BASE_URL + "/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+    await AuthService.login(email, password);
 
-    const data = await response.json();
+    const redirectUrl = getQueryParam("redirect");
 
-    if (!response.ok) {
-      throw new Error(data.message || "Email ou mot de passe incorrect");
+    const auctionId = getQueryParam("auctionId");
+
+    if(redirectUrl){
+      window.location.href = redirectUrl;
     }
-
-    // on stocke user + token
-    localStorage.setItem("user", JSON.stringify(data.user));
-    localStorage.setItem("token", data.token);
-
-    const auctionId = getAuctionIdFromUrl();
-    if (auctionId) {
+    else if (auctionId) {
       window.location.href =
-        "index.html?auctionId=" + encodeURIComponent(auctionId);
+        "/?auctionId=" + encodeURIComponent(auctionId);
     } else {
-      window.location.href = "index.html";
+      window.location.href = "/";
     }
   } catch (err) {
-    errorEl.textContent = err.message;
+    if (err.status === 401) {
+        errorEl.textContent = "Email ou mot de passe incorrect.";
+        passwordInput.value = ""; // On vide le mot de passe pour qu'il réessaie
+        passwordInput.focus();    // On remet le curseur dedans
+    } 
+    // Si le serveur est en panne (
+    else if (err.status === 500) {
+        errorEl.textContent = "Serveur indisponible, réessayez plus tard.";
+    }
+    // Sinon, on affiche le message technique envoyé par le backend
+    else {
+        errorEl.textContent = err.message;
+    }
   }
 });

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Enchères</title>
+  <link rel="stylesheet" href="/css/index.css" />
+</head>
+<body>
+
+  <section class="hero">
+    <div class="hero-left">
+      <h1>Ventes aux enchères en ligne</h1>
+      <p>Trouve ta prochaine bonne affaire ou vends tes objets.</p>
+      <a href="/new-auction" class="btn-inscription">Mettre un objet en vente</a>
+    </div>
+  </section>
+
+  <section class="categories">
+    <div class="categories-inner">
+      <button class="cat-arrow">‹</button>
+      <div class="categories-list">
+        <div class="category-card" data-category="voiture">
+            <div class="category-icon">🚗</div>
+            <div class="category-label">Véhicules</div>
+        </div>
+        <div class="category-card" data-category="console">
+            <div class="category-icon">🎮</div>
+            <div class="category-label">Consoles</div>
+        </div>
+      </div>
+      <button class="cat-arrow">›</button>
+    </div>
+  </section>
+
+  <main class="container">
+    <h2 class="section-title">Enchères en cours</h2>
+    <div id="auctions-list" class="grid"></div>
+    
+    <div style="text-align: center; margin-top: 40px;">
+        <button id="load-more-btn" class="btn-connexion" style="display: none;">Charger plus</button>
+    </div>
+  </main>
+
+  <script type="module" src="/javaScript/index.js"></script>
+</body>
+</html>

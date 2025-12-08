@@ -1,53 +1,53 @@
-const API_BASE_URL = "http://localhost:3000";
+import AuthService from "./services/auth.service.js"; 
 
-export async function getCurrentUser() {
-    const token = localStorage.getItem("token");
-    if (!token) {
-        return null;
-    }
+export function updateHeader() {
+    const headerActions = document.querySelector(".header-actions");
+    if (!headerActions) return; 
 
-    try {
+    // On nettoie tout le contenu actuel
+    headerActions.innerHTML = "";
 
-        const res = await fetch(API_BASE_URL + "/api/auth/me", {
-            headers: {Authorization: `Bearer ${token}`},    
+    const user = AuthService.getCurrentUser();
+
+    const langDiv = document.createElement("div");
+    langDiv.className = "lang";
+    langDiv.innerHTML = "🇫🇷 <span>French</span>";
+
+    if (user) {
+        const displayName = user.username || "Mon Profil";
+
+        const profileBtn = document.createElement("a");
+        profileBtn.href = "/profile";
+        profileBtn.className = "btn-connexion";
+        profileBtn.style.backgroundColor = "#447c00";
+
+        profileBtn.textContent = `👤 ${displayName}`;
+
+        const logoutBtn = document.createElement("button");
+        logoutBtn.className = "btn-inscription";
+        logoutBtn.style.cursor = "pointer";
+        logoutBtn.textContent = "🚪 Déconnexion";
+        logoutBtn.addEventListener("click", () => {
+            AuthService.logout(); 
         });
 
-        if (!res.ok) { return null; }
 
-        const data =  await res.json();
-        return data.user;
+        headerActions.append(profileBtn, logoutBtn, langDiv);
+    } 
+    
+    else {
+
+        const loginBtn = document.createElement("a");
+        loginBtn.href = "/login";
+        loginBtn.className = "btn-connexion";
+        loginBtn.textContent = "👤 Connexion";
 
 
-    } catch (e) { return null; } 
-}
+        const registerBtn = document.createElement("a");
+        registerBtn.href = "/register";
+        registerBtn.className = "btn-inscription";
+        registerBtn.textContent = "🧾 Inscription";
 
-export async function updateHeader() {
-    const header = document.querySelector(".header-actions");
-    if (!header) return;
-
-    const user = await getCurrentUser();
-
-    if (!user) {
-
-        header.innerHTML = `
-            <a href="login.html" class="btn-connexion">👤 Connexion</a>
-            <a href="register.html" class="btn-inscription">🧾 Inscription</a>
-            <div class="lang">🇫🇷 <span>French</span></div>
-        `;
-        return;
+        headerActions.append(loginBtn, registerBtn, langDiv);
     }
-
-    header.innerHTML = `
-        <a href="profile.html" class="btn-connexion">👤 ${user.email}</a>
-        <button id="logout-btn" class="btn-inscription">🚪 Déconnexion</button>
-        <div class="lang">🇫🇷 <span>French</span></div>
-    `;
-
-    document.getElementById("logout-btn").addEventListener("click", () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        window.location.href = "login.html";
-    });
 }
-
-document.addEventListener("DOMContentLoaded", updateHeader);

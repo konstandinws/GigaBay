@@ -1,210 +1,209 @@
-const API_BASE_URL = "http://localhost:3000";
+import AuctionService from "./services/auction.service.js";
+import { API_BASE_URL } from "./api/client.js";
+import { getRemainingTime } from "./utils/date.js";
+import { loadLayout } from "./components/layout.js";
 
-let allAuctions = []; // toutes les enchères récupérées
+let allAuctions = [];
+let timerInterval = null;
+let currentPage = 1;
+const LIMIT = 12; 
+let isFilterActive = false;
 
-function getToken() {
-  return localStorage.getItem("token");
+function startCountdown() {
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+        const timerElements = document.querySelectorAll(".live-timer");
+        timerElements.forEach(el => {
+            const endDate = el.dataset.end;
+            const timeData = getRemainingTime(endDate); 
+            el.textContent = timeData.text;
+            
+            if (timeData.isFinished) {
+                el.style.color = "#e53935"; 
+                el.style.fontWeight = "bold";
+            } else if (timeData.total < 3600000) { 
+                el.style.color = "#d32f2f"; 
+            }
+        });
+    }, 1000);
 }
 
-// format HH:MM:SS à partir de end_date
-function formatTime(endDate) {
-  const d = new Date(endDate);
-  if (isNaN(d.getTime())) return endDate || "";
-  return d.toLocaleTimeString("fr-FR", { hour12: false });
-}
-
-// affiche une liste d'enchères dans les cartes
-function displayAuctions(list) {
+// Affiche les enchères Sans innerHTML
+function displayAuctions(list, append = false) {
   const container = document.getElementById("auctions-list");
-  container.innerHTML = "";
+  
+  if (!append) {
+      container.innerHTML = ""; // On peut vider avec innerHTML, c'est safe
+  }
 
-  if (!list || list.length === 0) {
-    container.innerHTML = "<p>Aucune enchère trouvée.</p>";
+  if ((!list || list.length === 0) && !append) {
+    // Ici le HTML est écrit en dur par nous, donc c'est safe
+    container.innerHTML = `<div class="empty-state" style="grid-column: 1/-1;"><p>Aucune enchère trouvée.</p></div>`;
     return;
   }
 
-  list.forEach((a) => {
+  list.forEach((auction) => {
+    // 1. Création de la carte
     const card = document.createElement("div");
     card.className = "card auction-card";
+    card.style.cursor = "pointer";
+    
+    card.addEventListener("click", () => {
+        window.location.href = `/auction?id=${auction.id}`;
+    });
 
-    // IMAGE
-    if (a.image_url) {
-      const img = document.createElement("img");
-      img.src = API_BASE_URL + a.image_url;
-      img.alt = a.title;
-      card.appendChild(img);
+    const imgContainer = document.createElement("div");
+    imgContainer.className = "img-wrapper img-wrapper-large";
+    
+    let hasImage = false;
+    let imageUrl = "";
+
+    // Vérification de l'image
+    if (auction.images && auction.images.length > 0) {
+        imageUrl = `/uploads/${auction.images[0]}`;
+        hasImage = true;
+    } else if (auction.image_url) {
+        const siteUrl = API_BASE_URL.replace("/api", "");
+        imageUrl = siteUrl + auction.image_url;
+        hasImage = true;
     }
 
-    // BADGE (enchère de départ / plus élevée)
-    const badge = document.createElement("div");
-    badge.className = "auction-badge";
-
-    const highest = Number(a.current_price) > Number(a.starting_price);
-    if (highest) {
-      badge.textContent = "Enchère la plus élevée € " + a.current_price;
+    if (hasImage) {
+        const img = document.createElement("img");
+        img.src = imageUrl;
+        img.alt = auction.title;
+        imgContainer.appendChild(img);
     } else {
-      badge.textContent = "Enchère de départ € " + a.starting_price;
+        const noImageText = document.createElement("span");
+        noImageText.className = "img-placeholder-text"; // <--- Classe CSS
+        noImageText.textContent = "Pas d'image";
+        imgContainer.appendChild(noImageText);
     }
-    card.appendChild(badge);
 
-    // CORPS
+    const currentPrice = parseFloat(auction.current_price);
+    const startPrice = parseFloat(auction.starting_price);
+    const isBiddingStarted = currentPrice > startPrice;
+    
+    const badge = document.createElement("div");
+    badge.className = isBiddingStarted ? "auction-badge" : "auction-badge starting";
+    badge.textContent = isBiddingStarted ? `Enchère : ${currentPrice} €` : `Mise à prix : ${startPrice} €`;
+
+    // 4. Corps de la carte (Titre + Lot)
     const body = document.createElement("div");
     body.className = "auction-body";
 
-    // Titre
     const title = document.createElement("div");
     title.className = "auction-title";
-    title.textContent = a.title;
-    body.appendChild(title);
+    title.textContent = auction.title; 
 
-    // Numéro de lot (on utilise l'id comme numéro de lot)
     const lotRow = document.createElement("div");
     lotRow.className = "auction-lot-row";
 
-    const lineLeft = document.createElement("div");
-    lineLeft.className = "auction-lot-line";
-    const lineRight = document.createElement("div");
-    lineRight.className = "auction-lot-line";
-
+    const line1 = document.createElement("div");
+    line1.className = "auction-lot-line";
+    
     const lotBox = document.createElement("div");
     lotBox.className = "auction-lot-box";
-    lotBox.textContent = "Numéro de lot: " + a.id;
+    lotBox.textContent = `Lot n°${auction.id}`; 
 
-    lotRow.appendChild(lineLeft);
-    lotRow.appendChild(lotBox);
-    lotRow.appendChild(lineRight);
-    body.appendChild(lotRow);
+    const line2 = document.createElement("div");
+    line2.className = "auction-lot-line";
 
-    // Nombre d'enchères (si un jour tu ajoutes bids_count côté API)
-    const bidsP = document.createElement("p");
-    bidsP.className = "auction-bids";
-    const nbBids = a.bids_count != null ? a.bids_count : 0;
-    bidsP.textContent = "Nombre d'enchères: " + nbBids;
-    body.appendChild(bidsP);
+    lotRow.append(line1, lotBox, line2);
+    body.append(title, lotRow);
 
-    card.appendChild(body);
-
-    // FOOTER : heure + bouton Enchérir
     const footer = document.createElement("div");
     footer.className = "card-footer";
+    footer.style.cssText = "justify-content: center; padding-top: 15px; padding-bottom: 15px;";
 
     const timeDiv = document.createElement("div");
     timeDiv.className = "auction-time";
 
-    const clock = document.createElement("div");
-    clock.className = "auction-clock-icon";
-    clock.textContent = "⏱";
+    const icon = document.createElement("div");
+    icon.className = "auction-clock-icon";
+    icon.textContent = "⏱";
 
-    const timeText = document.createElement("span");
-    timeText.textContent = formatTime(a.end_date);
+    const timeInfo = getRemainingTime(auction.end_date);
+    const timerSpan = document.createElement("span");
+    timerSpan.className = "live-timer";
+    timerSpan.dataset.end = auction.end_date;
+    timerSpan.textContent = timeInfo.text;
 
-    timeDiv.appendChild(clock);
-    timeDiv.appendChild(timeText);
-
-    const bidBtn = document.createElement("button");
-    bidBtn.textContent = "Enchérir";
-    bidBtn.addEventListener("click", async function () {
-  const token = getToken();
-
-  if (!token) {
-    // Pas connecté → redirection login
-    window.location.href =
-      "login.html?auctionId=" + encodeURIComponent(a.id);
-    return;
-  }
-
-  // Demander le montant
-  const input = prompt(
-    `Montant de votre enchère en € (prix actuel : ${a.current_price} €) :`
-  );
-  if (input === null) return; // Annulé
-
-  const amount = parseFloat(input.replace(",", "."));
-  if (isNaN(amount)) {
-    alert("Montant invalide.");
-    return;
-  }
-
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/auctions/${a.id}/bids`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-        body: JSON.stringify({ amount }),
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || "Erreur lors de la mise.");
-    }
-
-    alert("Enchère placée avec succès !");
-    // Met à jour le prix affiché sur la carte
-    a.current_price = data.data.newPrice;
-    // (au besoin tu peux re-render toute la liste avec displayAuctions(allAuctions))
-    displayAuctions(allAuctions);
-  } catch (err) {
-    console.error(err);
-    alert(err.message);
-  }
-});
-
-
+    timeDiv.append(icon, timerSpan);
     footer.appendChild(timeDiv);
-    footer.appendChild(bidBtn);
-    card.appendChild(footer);
 
+    // Assemblage final
+    card.append(imgContainer, badge, body, footer);
     container.appendChild(card);
   });
+
+  startCountdown();
 }
 
-// chargement initial + filtres catégories
-document.addEventListener("DOMContentLoaded", async () => {
-  const errorEl = document.getElementById("error-message");
+async function loadAuctions(page) {
+    const btn = document.getElementById("load-more-btn");
+    
+    try {
+        const response = await AuctionService.getAll(page, LIMIT);
+        const newAuctions = response.data || [];
 
-  try {
-    const response = await fetch(API_BASE_URL + "/api/auctions");
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || "Erreur API");
-    }
-
-    allAuctions = data.data || [];
-    displayAuctions(allAuctions);
-
-    // Gestion du filtrage par catégories (si la section existe)
-    const categoryCards = document.querySelectorAll(".category-card");
-
-    categoryCards.forEach((card) => {
-      card.addEventListener("click", () => {
-        const category = (card.dataset.category || "").toLowerCase();
-
-        // visuel "active"
-        categoryCards.forEach((c) => c.classList.remove("active"));
-        card.classList.add("active");
-
-        if (!category) {
-          displayAuctions(allAuctions);
-          return;
+        if (page === 1) {
+            allAuctions = newAuctions;
+            displayAuctions(newAuctions, false); 
+        } else {
+            allAuctions = [...allAuctions, ...newAuctions];
+            displayAuctions(newAuctions, true);
         }
 
-        const filtered = allAuctions.filter((a) => {
-          const txt = (a.title + " " + (a.description || "")).toLowerCase();
-          return txt.includes(category);
-        });
+        if (btn) {
+            if (newAuctions.length < LIMIT) {
+                btn.style.display = "none";
+            } else {
+                btn.style.display = "inline-block";
+            }
+        }
 
-        displayAuctions(filtered);
-      });
+    } catch (err) {
+        console.error("Erreur chargement:", err);
+        const container = document.getElementById("auctions-list");
+        if(page === 1) container.innerHTML = `<p class="error">Impossible de charger les enchères.</p>`;
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadLayout();
+    loadAuctions(currentPage);
+
+    const btn = document.getElementById("load-more-btn");
+    if(btn) {
+        btn.addEventListener("click", () => {
+            currentPage++;
+            loadAuctions(currentPage);
+        });
+    }
+
+    const categoryCards = document.querySelectorAll(".category-card");
+    categoryCards.forEach((card) => {
+        card.addEventListener("click", () => {
+            const loadMoreBtn = document.getElementById("load-more-btn");
+            if(loadMoreBtn) loadMoreBtn.style.display = "none";
+            
+            isFilterActive = true;
+
+            categoryCards.forEach(c => c.classList.remove("active"));
+            card.classList.add("active");
+            
+            const category = (card.dataset.category || "").toLowerCase();
+            
+            if (!category) {
+                displayAuctions(allAuctions, false);
+            } else {
+                const filtered = allAuctions.filter(a => {
+                    const content = (a.title + " " + (a.description || "")).toLowerCase();
+                    return content.includes(category);
+                });
+                displayAuctions(filtered, false);
+            }
+        });
     });
-  } catch (err) {
-    console.error(err);
-    if (errorEl) errorEl.textContent = err.message;
-  }
 });

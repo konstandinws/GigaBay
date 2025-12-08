@@ -1,5 +1,6 @@
 import Auction from "../models/Auction.js";
 import Bid from "../models/Bid.js";
+import User from "../models/User.js";
 
 class BidService {
   static async placeBid(userId, auctionId, amount) {
@@ -31,7 +32,13 @@ class BidService {
       );
     }
 
-    // Créer l’enchère (ligne dans la table bids)
+    const user = await User.findById(userId);
+    if (user.balance < numericAmount) {
+        throw new Error(`Fonds insuffisants. Votre solde est de ${user.balance} €.`);
+    }
+
+    await User.updateBalance(userId, -numericAmount);
+
     const bid = await Bid.create({
       amount: numericAmount,
       user_id: userId,

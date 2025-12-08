@@ -25,11 +25,12 @@ class Auction {
         });
     }
 
-    static getAll() {
+    static getAll(limit = 12, offset = 0) {
         return new Promise((resolve, reject) => {
-            db.all("SELECT * FROM auctions", [], (err, rows) => {
+            const sql = "SELECT * FROM auctions ORDER BY id DESC LIMIT ? OFFSET ?";
+            db.all(sql, [limit, offset], (err, rows) => {
                 if (err) reject(err);
-                else resolve(rows);  // rows = tableau d'enchères
+                else resolve(rows);
             });
         });
     }
@@ -41,6 +42,31 @@ class Auction {
                 [id],
                 (err, row) => err ? reject(err) : resolve(row)
             );
+        });
+    }
+
+    static update(id, { title, description }) {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                UPDATE auctions 
+                SET title = ?, description = ?
+                WHERE id = ?
+            `;
+            // On ne passe plus que title, description et id
+            db.run(sql, [title, description, id], function(err) {
+                if (err) reject(err);
+                else resolve(this.changes > 0);
+            });
+        });
+    }
+
+    static findByUserId(userId) {
+        return new Promise((resolve, reject) => {
+            const sql = "SELECT * FROM auctions WHERE user_id = ? ORDER BY id DESC";
+            db.all(sql, [userId], (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
         });
     }
 
