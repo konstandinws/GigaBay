@@ -25,11 +25,12 @@ class Auction {
         });
     }
 
-    static getAll() {
+    static getAll(limit = 12, offset = 0) {
         return new Promise((resolve, reject) => {
-            db.all("SELECT * FROM auctions", [], (err, rows) => {
+            const sql = "SELECT * FROM auctions ORDER BY id DESC LIMIT ? OFFSET ?";
+            db.all(sql, [limit, offset], (err, rows) => {
                 if (err) reject(err);
-                else resolve(rows);  // rows = tableau d'enchères
+                else resolve(rows);
             });
         });
     }

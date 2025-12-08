@@ -1,8 +1,9 @@
 import { apiFetch, API_BASE_URL } from "../api/client.js";
 
 class AuctionService {
-    static async getAll() {
-        return await apiFetch("/auctions");
+    
+    static async getAll(page = 1, limit = 10) {
+        return await apiFetch(`/auctions?page=${page}&limit=${limit}`);
     }
 
     static async getOne(id) {

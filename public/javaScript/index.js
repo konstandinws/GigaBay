@@ -3,6 +3,9 @@ import { API_BASE_URL } from "./api/client.js";
 
 let allAuctions = [];
 let timerInterval = null;
+let currentPage = 1;
+const LIMIT = 12; // Nombre d'enchères par chargement
+let isFilterActive = false;
 
 function getRemainingTime(endDate) {
   const total = Date.parse(endDate) - Date.parse(new Date());
@@ -29,22 +32,26 @@ function startCountdown() {
             const timeData = getRemainingTime(endDate);
             el.textContent = timeData.text;
             
-            // Gestion de la couleur du texte
             if (timeData.isFinished) {
-                el.style.color = "#e53935"; // Rouge
+                el.style.color = "#e53935"; 
                 el.style.fontWeight = "bold";
             } else if (timeData.total < 3600000) { 
-                el.style.color = "#d32f2f"; // Orange si < 1h
+                el.style.color = "#d32f2f"; 
             }
         });
     }, 1000);
 }
 
-function displayAuctions(list) {
+// MODIFICATION : Ajout du paramètre 'append' pour savoir si on ajoute ou remplace
+function displayAuctions(list, append = false) {
   const container = document.getElementById("auctions-list");
-  container.innerHTML = "";
+  
+  // Si on n'est pas en mode "ajout", on vide le conteneur
+  if (!append) {
+      container.innerHTML = "";
+  }
 
-  if (!list || list.length === 0) {
+  if ((!list || list.length === 0) && !append) {
     container.innerHTML = `<div class="empty-state" style="grid-column: 1/-1;"><p>Aucune enchère trouvée.</p></div>`;
     return;
   }
@@ -53,13 +60,9 @@ function displayAuctions(list) {
     const card = document.createElement("div");
     card.className = "card auction-card";
     
-    // === RENDRE LA CARTE CLIQUABLE ===
     card.style.cursor = "pointer";
     card.addEventListener("click", (event) => {
-        // Si on clique sur une flèche du carrousel, on ne change pas de page
         if (event.target.classList.contains('carousel-btn')) return;
-        
-        // Sinon, redirection vers la page détail
         window.location.href = `/auction?id=${auction.id}`;
     });
 
@@ -102,8 +105,6 @@ function displayAuctions(list) {
 
     const timeInfo = getRemainingTime(auction.end_date);
 
-    // --- HTML DE LA CARTE ---
-    // J'ai retiré le <button> du footer et j'ai centré le timer.
     card.innerHTML = `
         ${carouselHtml}
         <div class="${badgeClass}">${badgeText}</div>
@@ -133,9 +134,8 @@ function displayAuctions(list) {
   startCountdown();
 }
 
-// Fonction Slider (Globale)
 window.moveSlide = function(btn, direction) {
-    event.stopPropagation(); // Empêche le clic de rediriger
+    event.stopPropagation();
     const container = btn.closest(".card-image-container");
     const images = container.querySelectorAll("img");
     let activeIndex = 0;
@@ -151,35 +151,77 @@ window.moveSlide = function(btn, direction) {
     images[newIndex].classList.add("active");
 };
 
-async function loadAllAuctions() {
+// MODIFICATION : Nouvelle fonction de chargement avec pagination
+async function loadAuctions(page) {
+    const btn = document.getElementById("load-more-btn");
+    
     try {
-        const response = await AuctionService.getAll();
-        allAuctions = response.data || [];
-        displayAuctions(allAuctions);
+        // Appel API avec page et limite
+        const response = await AuctionService.getAll(page, LIMIT);
+        const newAuctions = response.data || [];
+
+        if (page === 1) {
+            allAuctions = newAuctions;
+            displayAuctions(newAuctions, false); // Remplace tout
+        } else {
+            allAuctions = [...allAuctions, ...newAuctions]; // Ajoute à la suite
+            displayAuctions(newAuctions, true); // Mode "append" activé
+        }
+
+        // Gestion de l'affichage du bouton "Charger plus"
+        if (btn) {
+            if (newAuctions.length < LIMIT) {
+                btn.style.display = "none"; // Plus rien à charger
+            } else {
+                btn.style.display = "inline-block";
+            }
+        }
+
     } catch (err) {
         console.error("Erreur chargement:", err);
-        document.getElementById("auctions-list").innerHTML = `<p class="error">Impossible de charger les enchères.</p>`;
+        const container = document.getElementById("auctions-list");
+        if(page === 1) container.innerHTML = `<p class="error">Impossible de charger les enchères.</p>`;
     }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    loadAllAuctions();
+    // 1. Chargement initial de la page 1
+    loadAuctions(currentPage);
 
-    // Filtres Catégories
+    // 2. Écouteur sur le bouton "Charger plus"
+    const btn = document.getElementById("load-more-btn");
+    if(btn){
+        btn.addEventListener("click", () => {
+            currentPage++;
+            loadAuctions(currentPage);
+        });
+    }
+
+    // 3. Filtres Catégories
     const categoryCards = document.querySelectorAll(".category-card");
     categoryCards.forEach((card) => {
         card.addEventListener("click", () => {
+            // On cache le bouton "Charger plus" quand on filtre pour simplifier
+            const loadMoreBtn = document.getElementById("load-more-btn");
+            if(loadMoreBtn) loadMoreBtn.style.display = "none";
+            
+            isFilterActive = true;
+
             categoryCards.forEach(c => c.classList.remove("active"));
             card.classList.add("active");
+            
             const category = (card.dataset.category || "").toLowerCase();
+            
             if (!category) {
-                displayAuctions(allAuctions);
+                // Si on désélectionne, on pourrait vouloir recharger la pagination, 
+                // mais ici on affiche simplement tout ce qu'on a déjà chargé.
+                displayAuctions(allAuctions, false);
             } else {
                 const filtered = allAuctions.filter(a => {
                     const content = (a.title + " " + (a.description || "")).toLowerCase();
                     return content.includes(category);
                 });
-                displayAuctions(filtered);
+                displayAuctions(filtered, false);
             }
         });
     });

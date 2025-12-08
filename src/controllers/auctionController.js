@@ -5,8 +5,17 @@ import AuctionService from "../Services/auctionService.js"
 
 const getAll = async (req, res) => {
     try {
-        const allAuctions = await AuctionService.getAllAuctions();
-        res.status(200).json({ data: allAuctions });
+        // On récupère page et limit de l'URL, avec des valeurs par défaut
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 12;
+
+        const allAuctions = await AuctionService.getAllAuctions(page, limit);
+        
+        res.status(200).json({ 
+            status: "success",
+            page: page,
+            data: allAuctions 
+        });
     } catch (error) {
         res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
