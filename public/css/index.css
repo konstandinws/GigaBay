@@ -1,40 +1,90 @@
 /* =========================
-   GLOBAL
+   VARIABLES & GLOBAL
    ========================= */
 
+:root {
+  /* --- PALETTE DE COULEURS --- */
+  
+  /* Marrons (Identité principale) */
+  --primary-color: #7c6700;       /* Boutons, badges, liens */
+  --primary-hover: #d29300;       /* Survol boutons, barre recherche */
+  --header-brown: #5d370b;        /* Topbar, titres formulaires */
+  
+  /* Bleus (Titres et Hero) */
+  --secondary-color: #0d3b66;     /* Titres sections */
+  --secondary-light: #145c9e;     /* Dégradé Hero */
+
+  /* Accents */
+  --accent-green: #447c00;        /* Logo, Prix, Lien actif */
+  
+  /* Feedback (Succès, Erreur) */
+  --color-success: #1b9e77;
+  --color-error: #e53935;
+  --color-warning: #d32f2f;       /* Timer finissant */
+
+  /* Textes */
+  --text-main: #1f2933;           /* Texte principal */
+  --text-secondary: #3b3b3b;      /* Liens nav */
+  --text-muted: #555555;          /* Descriptions */
+  --text-light: #ffffff;          /* Texte sur fond foncé */
+
+  /* Arrière-plans */
+  --bg-body: #f6f8fb;
+  --bg-white: #ffffff;
+  --bg-categories: #f7f2e9;
+  --bg-form: #fdfbf6;
+  --bg-icon: #fff7e0;
+  --bg-input: #f8f8f8;
+
+  /* Bordures */
+  --border-color: #e3d4bc;
+  --border-light: #cbd2e1;
+  --border-nav: #f0e0c5;
+
+  /* --- TYPOGRAPHIE --- */
+  --font-main: "Segoe UI", system-ui, sans-serif;
+
+  /* --- ESPACEMENTS & RAYONS --- */
+  --container-width: 1200px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 50px;
+}
+
 body {
-  font-family: "Segoe UI", system-ui, sans-serif;
-  background: #f6f8fb;
-  color: #1f2933;
+  font-family: var(--font-main);
+  background: var(--bg-body);
+  color: var(--text-main);
   line-height: 1.6;
   margin: 0;
   padding: 0;
 }
 
-/* Conteneur principal (pour la liste des enchères) */
+/* Conteneur principal */
 .container {
-  max-width: 1200px;
+  max-width: var(--container-width);
   margin: 30px auto;
   padding: 0 80px;
 }
 
 /* Messages d’erreur / succès */
 .error {
-  color: #e53935;
+  color: var(--color-error);
   margin-bottom: 10px;
 }
 
 .success {
-  color: #1b9e77;
+  color: var(--color-success);
   margin-bottom: 10px;
 }
 
-/* Titre de section (ex : “Enchères en cours”) */
+/* Titre de section */
 .section-title {
   font-size: 1.8rem;
-  color: #0d3b66;
+  color: var(--secondary-color);
   margin-bottom: 20px;
-  border-left: 5px solid #0d3b66;
+  border-left: 5px solid var(--secondary-color);
   padding-left: 10px;
   font-weight: 700;
 }
@@ -45,8 +95,8 @@ body {
 
 /* Barre marron en haut */
 .topbar {
-  background: #5d370b;
-  color: #ffffff;
+  background: var(--header-brown);
+  color: var(--text-light);
   font-size: 0.9rem;
   padding: 6px 80px;
   display: flex;
@@ -58,9 +108,9 @@ body {
   margin-left: 20px;
 }
 
-/* Header principal blanc avec logo + recherche + boutons */
+/* Header principal */
 .main-header {
-  background: #ffffff;
+  background: var(--bg-white);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -83,7 +133,7 @@ body {
 
 .logo-text {
   font-size: 1.4rem;
-  color: #447c00;
+  color: var(--accent-green);
 }
 
 /* Barre de recherche */
@@ -93,8 +143,8 @@ body {
   flex: 1;
   max-width: 400px;
   margin: 0 40px;
-  border: 1px solid #cbd2e1;
-  border-radius: 50px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-full);
   overflow: hidden;
 }
 
@@ -108,14 +158,14 @@ body {
 
 .search-bar button {
   border: none;
-  background: #d29300;
-  color: white;
+  background: var(--primary-hover);
+  color: var(--text-light);
   padding: 8px 14px;
   cursor: pointer;
   font-size: 1rem;
 }
 
-/* Boutons Connexion / Inscription */
+/* Boutons Header */
 .header-actions {
   display: flex;
   align-items: center;
@@ -132,13 +182,13 @@ body {
 }
 
 .btn-connexion {
-  background: #7c6700;
-  color: #ffffff;
+  background: var(--primary-color);
+  color: var(--text-light);
 }
 
 .btn-inscription {
-  background: #f8f8f8;
-  color: #7c7000;
+  background: var(--bg-input);
+  color: #7c7000; /* Gardé tel quel car spécifique */
   border: 1px solid #ccd;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -152,7 +202,7 @@ body {
   border-radius: 10px;
   padding: 6px 10px;
   font-size: 0.9rem;
-  background: #ffffff;
+  background: var(--bg-white);
 }
 
 /* =========================
@@ -160,9 +210,9 @@ body {
    ========================= */
 
 .main-nav {
-  background: #ffffff;
+  background: var(--bg-white);
   padding: 10px 80px 6px;
-  border-bottom: 2px solid #f0e0c5;
+  border-bottom: 2px solid var(--border-nav);
   display: flex;
   gap: 24px;
 }
@@ -170,32 +220,32 @@ body {
 .nav-link {
   font-size: 0.95rem;
   text-decoration: none;
-  color: #3b3b3b;
+  color: var(--text-secondary);
   padding-bottom: 6px;
   border-bottom: 2px solid transparent;
   transition: color 0.15s ease, border-color 0.15s ease;
 }
 
 .nav-link:hover {
-  color: #d29300;
-  border-bottom-color: #d29300;
+  color: var(--primary-hover);
+  border-bottom-color: var(--primary-hover);
 }
 
 .nav-link.active {
-  color: #447c00;
-  border-bottom-color: #447c00;
+  color: var(--accent-green);
+  border-bottom-color: var(--accent-green);
 }
 
 /* =========================
-   HERO (bandeau en haut de l’index)
+   HERO
    ========================= */
 
 .hero {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(135deg, #0d3b66, #145c9e);
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--secondary-color), var(--secondary-light));
+  color: var(--text-light);
   padding: 5px 10px;
   min-height: 50px;
 }
@@ -223,8 +273,8 @@ body {
   display: inline-block;
   padding: 12px 24px;
   border-radius: 10px;
-  background: #ffffff;
-  color: #0d3b66;
+  background: var(--bg-white);
+  color: var(--secondary-color);
   font-weight: 700;
   text-decoration: none;
   transition: background 0.2s ease;
@@ -251,9 +301,9 @@ body {
    ========================= */
 
 .categories {
-  background: #f7f2e9;
+  background: var(--bg-categories);
   padding: 20px 80px 24px;
-  border-bottom: 1px solid #e3d4bc;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .categories-inner {
@@ -262,11 +312,10 @@ body {
   gap: 12px;
 }
 
-/* flèches gauche/droite */
 .cat-arrow {
   border: none;
-  background: #ffffff;
-  color: #7c6700;
+  background: var(--bg-white);
+  color: var(--primary-color);
   border-radius: 50%;
   width: 32px;
   height: 32px;
@@ -276,7 +325,6 @@ body {
   cursor: pointer;
 }
 
-/* liste horizontale de cartes */
 .categories-list {
   flex: 1;
   display: flex;
@@ -300,7 +348,7 @@ body {
 /* carte catégorie */
 .category-card {
   min-width: 180px;
-  background: #ffffff;
+  background: var(--bg-white);
   border-radius: 14px;
   padding: 10px 14px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
@@ -315,19 +363,19 @@ body {
 .category-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
-  border-color: #d29300;
+  border-color: var(--primary-hover);
 }
 
 .category-card.active {
-  border-color: #447c00;
+  border-color: var(--accent-green);
   box-shadow: 0 6px 14px rgba(68, 124, 0, 0.25);
 }
 
 .category-icon {
   width: 40px;
   height: 40px;
-  border-radius: 12px;
-  background: #fff7e0;
+  border-radius: var(--radius-md);
+  background: var(--bg-icon);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -340,7 +388,6 @@ body {
   color: #4b3a22;
 }
 
-/* petits points en dessous */
 .categories-dots {
   margin-top: 10px;
   display: flex;
@@ -356,11 +403,11 @@ body {
 }
 
 .categories-dots .dot.active {
-  background: #7c6700;
+  background: var(--primary-color);
 }
 
 /* =========================
-   GRILLE D’ENCHÈRES (cartes)
+   GRILLE D’ENCHÈRES
    ========================= */
 
 .grid {
@@ -369,37 +416,35 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
-/* carte principale */
 .card.auction-card {
-  background: #ffffff;
+  background: var(--bg-white);
   border-radius: 18px;
   box-shadow: 0 12px 25px rgba(0, 0, 0, 0.18);
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  transition: all 0.3s ease;
 }
 
-/* image */
-.card.auction-card img {
-  width: 100%;
-  height: 220px;
-  object-fit: cover;
+.card.auction-card:hover {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+  transform: scale(1.05) translateY(-5px);
+  z-index: 10;
+  cursor: pointer;
 }
 
-/* bandeau "Enchère la plus élevée / de départ" */
 .auction-badge {
   position: relative;
   margin: -22px auto 14px;
   padding: 8px 20px;
   border-radius: 999px;
-  background: #7c6700;       /* marron/vert du thème */
-  color: #ffffff;
+  background: var(--primary-color);
+  color: var(--text-light);
   font-size: 0.95rem;
   font-weight: 600;
   box-shadow: 0 4px 12px rgba(124, 103, 0, 0.5);
 }
 
-/* corps de la carte */
 .auction-body {
   padding: 0 26px 18px;
   text-align: center;
@@ -409,11 +454,10 @@ body {
 .auction-title {
   font-size: 1.05rem;
   font-weight: 700;
-  color: #1f2933;
+  color: var(--text-main);
   margin-bottom: 18px;
 }
 
-/* ligne + "Numéro de lot" au centre */
 .auction-lot-row {
   display: flex;
   align-items: center;
@@ -424,31 +468,24 @@ body {
 .auction-lot-line {
   flex: 1;
   height: 1px;
-  background: #e3d4bc;
+  background: var(--border-color);
 }
 
 .auction-lot-box {
   padding: 10px 18px;
   border-radius: 4px;
-  border: 1px solid #e3d4bc;
-  background: #ffffff;
+  border: 1px solid var(--border-color);
+  background: var(--bg-white);
   font-weight: 600;
   font-size: 0.95rem;
-  color: #1f2933;
+  color: var(--text-main);
 }
 
-.auction-bids {
-  margin: 4px 0 0;
-  font-size: 0.95rem;
-  color: #34495e;
-}
-
-/* pied de carte : heure + bouton */
 .card-footer {
   padding: 12px 22px 16px;
   border-top: 1px solid #e0e5ec;
   display: flex;
-  justify-content: space-between;
+  justify-content: center; /* Centré comme demandé */
   align-items: center;
 }
 
@@ -457,15 +494,15 @@ body {
   align-items: center;
   gap: 8px;
   font-size: 0.95rem;
-  color: #1f2933;
+  color: var(--text-main);
 }
 
 .auction-clock-icon {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #5d370b;   /* même marron que la topbar */
-  color: #ffffff;
+  background: var(--header-brown);
+  color: var(--text-light);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -473,7 +510,7 @@ body {
 }
 
 /* =========================
-   FORMULAIRES (login / register / new-auction)
+   FORMULAIRES
    ========================= */
 
 .page-form {
@@ -482,11 +519,11 @@ body {
   justify-content: center;
   align-items: flex-start;
   padding: 40px 0;
-  background: #fdfbf6;
+  background: var(--bg-form);
 }
 
 .form-card {
-  background: #ffffff;
+  background: var(--bg-white);
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   padding: 30px 40px;
@@ -495,7 +532,7 @@ body {
 
 .form-card h2 {
   text-align: center;
-  color: #5d370b;
+  color: var(--header-brown);
   margin-bottom: 20px;
 }
 
@@ -503,14 +540,14 @@ body {
   display: block;
   margin-bottom: 10px;
   font-weight: 600;
-  color: #3b3b3b;
+  color: var(--text-secondary);
 }
 
 .form-card input,
 .form-card textarea {
   width: 100%;
   padding: 10px 12px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   border: 1px solid #ccc;
   margin-bottom: 16px;
   font-size: 0.95rem;
@@ -519,7 +556,7 @@ body {
 
 .form-card input:focus,
 .form-card textarea:focus {
-  border-color: #d29300;
+  border-color: var(--primary-hover);
   outline: none;
 }
 
@@ -527,9 +564,9 @@ body {
   width: 100%;
   padding: 10px;
   border: none;
-  border-radius: 8px;
-  background: #7c6700;
-  color: #fff;
+  border-radius: var(--radius-sm);
+  background: var(--primary-color);
+  color: var(--text-light);
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
@@ -537,7 +574,7 @@ body {
 }
 
 .form-card button:hover {
-  background: #d29300;
+  background: var(--primary-hover);
 }
 
 .form-card p {
@@ -547,24 +584,13 @@ body {
 }
 
 .form-card a {
-  color: #7c6700;
+  color: var(--primary-color);
   font-weight: 600;
   text-decoration: none;
 }
 
 .form-card a:hover {
   text-decoration: underline;
-}
-
-.card {
-    transition: all 0.3s ease;
-}
-
-.card.auction-card:hover {
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
-  transform: scale(1.05) translateY(-5px);
-  z-index: 10;
-  cursor: pointer;
 }
 
 /* =========================

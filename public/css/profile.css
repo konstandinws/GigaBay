@@ -1,3 +1,7 @@
+/* =========================
+   STYLE DU PROFIL
+   ========================= */
+
 .profile-container {
   max-width: 900px;
   margin: 40px auto;
@@ -9,8 +13,8 @@
 
 /* --- CARDS GÉNÉRIQUES --- */
 .card {
-  background: #ffffff;
-  border-radius: 16px;
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   overflow: hidden;
 }
@@ -26,14 +30,15 @@
 .profile-avatar {
   width: 90px;
   height: 90px;
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  /* On utilise tes variables pour rester cohérent avec le thème */
+  background: linear-gradient(135deg, var(--secondary-light), var(--secondary-color));
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2.5rem;
-  color: white;
-  flex-shrink: 0; /* Empêche l'avatar de s'écraser */
+  color: var(--text-light);
+  flex-shrink: 0;
 }
 
 .profile-info {
@@ -43,11 +48,11 @@
 .profile-info h1 {
   margin: 0 0 8px 0;
   font-size: 1.8rem;
-  color: #111827;
+  color: var(--text-main);
 }
 
 .profile-email {
-  color: #6b7280;
+  color: var(--text-muted);
   margin-bottom: 12px;
   display: flex;
   align-items: center;
@@ -56,8 +61,10 @@
 
 /* --- 2. BALANCE CARD --- */
 .balance-card {
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
-  color: white;
+  /* On utilise la couleur primaire (Or/Marron) pour l'argent, ou le bleu secondaire */
+  /* Ici je mets le bleu secondaire pour rappeler le hero */
+  background: linear-gradient(135deg, var(--secondary-color), var(--secondary-light));
+  color: var(--text-light);
   padding: 30px;
 }
 
@@ -84,7 +91,7 @@
 /* --- 3. ONGLETS (TABS) --- */
 .tabs-list {
   display: flex;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .tab-trigger {
@@ -94,20 +101,20 @@
   border: none;
   font-size: 1rem;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--text-muted);
   cursor: pointer;
   border-bottom: 2px solid transparent;
   transition: all 0.2s;
 }
 
 .tab-trigger:hover {
-  background-color: #f9fafb;
-  color: #111827;
+  background-color: var(--bg-body);
+  color: var(--text-main);
 }
 
 .tab-trigger.active {
-  color: #2563eb;
-  border-bottom-color: #2563eb;
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
 }
 
 .tab-content {
@@ -129,37 +136,42 @@
 /* --- BOUTONS --- */
 .btn-outline {
   padding: 8px 16px;
-  border: 1px solid #d1d5db;
-  background: white;
-  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  background: var(--bg-white);
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-weight: 500;
-  color: #374151;
+  color: var(--text-secondary);
   transition: all 0.2s;
+}
+
+.btn-outline:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
 }
 
 .btn-destructive {
   padding: 10px 20px;
-  background: #ef4444;
-  color: white;
+  background: var(--color-error);
+  color: var(--text-light);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-weight: 600;
-  transition: background 0.2s;
+  transition: opacity 0.2s;
   max-width: 140px;
 }
 
 .btn-destructive:hover {
-  background: #dc2626;
+  opacity: 0.9;
 }
 
 .btn-secondary {
   padding: 8px 16px;
   background: rgba(255, 255, 255, 0.2);
-  color: white;
+  color: var(--text-light);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-weight: 500;
 }
@@ -170,11 +182,15 @@
 
 .btn-small {
   padding: 6px 12px;
-  background: #2563eb;
-  color: white;
+  background: var(--primary-color);
+  color: var(--text-light);
   text-decoration: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 0.9rem;
+}
+
+.btn-small:hover {
+  background: var(--primary-hover);
 }
 
 /* --- LISTE DES ENCHÈRES --- */
@@ -182,23 +198,23 @@
   display: flex;
   gap: 16px;
   padding: 16px;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
   margin-bottom: 12px;
   transition: background 0.2s;
-  align-items: center; /* Alignement vertical */
+  align-items: center;
 }
 
 .auction-item:hover {
-  background: #f9fafb;
+  background: var(--bg-body);
 }
 
 .auction-item img {
   width: 80px;
   height: 80px;
   object-fit: cover;
-  border-radius: 8px;
-  background: #e5e7eb;
+  border-radius: var(--radius-sm);
+  background: var(--bg-input);
   flex-shrink: 0;
 }
 
@@ -209,11 +225,12 @@
 .auction-info h4 {
   margin: 0 0 4px 0;
   font-size: 1.1rem;
+  color: var(--text-main);
 }
 
 .empty-state {
   text-align: center;
-  color: #9ca3af;
+  color: var(--text-muted);
   padding: 20px;
 }
 
@@ -223,14 +240,12 @@
 
 @media (max-width: 768px) {
   
-  /* Conteneur global */
   .profile-container {
     margin: 20px auto;
     padding: 0 16px;
     gap: 16px;
   }
 
-  /* 1. Header Profil : Mode colonne centré */
   .profile-header {
     flex-direction: column;
     text-align: center;
@@ -243,36 +258,38 @@
   }
 
   .profile-email {
-    justify-content: center; /* Centre l'email et l'icône */
+    justify-content: center;
   }
 
-  /* Le bouton déconnexion prend toute la largeur */
   .btn-destructive {
     width: 100%;
     margin-top: 8px;
+    max-width: none;
   }
 
-  /* 2. Solde */
   .balance-card {
     padding: 20px;
   }
 
   .balance-amount {
-    font-size: 2rem; /* Texte un peu moins gros sur mobile */
+    font-size: 2rem;
   }
 
   .balance-card button {
-    width: 100%; /* Bouton "Ajouter fonds" pleine largeur */
+    width: 100%;
   }
 
-  /* 3. Onglets et Contenu */
   .tab-content {
     padding: 16px;
   }
 
-  /* En-tête de l'onglet : Titre + Bouton l'un sous l'autre */
   .tab-header {
     flex-direction: column;
+    gap: 10px;
     align-items: stretch; 
+  }
+  
+  .btn-small {
+      text-align: center;
   }
 }
