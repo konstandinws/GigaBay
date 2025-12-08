@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const user = AuthService.getCurrentUser();
     if (!user) {
         saveDraft();
-        window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+        window.location.href = `/register?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
         return;
     }
 

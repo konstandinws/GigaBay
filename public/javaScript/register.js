@@ -25,6 +25,11 @@ if (auctionId) {
     "login.html?auctionId=" + encodeURIComponent(auctionId);
 }
 
+function getQueryParam(param) {
+  const params = new URLSearchParams(window.location.search);
+  return params.get(param);
+}
+
 form.addEventListener("submit", async function (e) {
   e.preventDefault();
   errorEl.textContent = "";
@@ -40,6 +45,20 @@ form.addEventListener("submit", async function (e) {
 
 
     await AuthService.register(username, email, password);
+
+    const redirectUrl = getQueryParam("redirect");
+
+    const auctionId = getQueryParam("auctionId");
+
+    if(redirectUrl){
+      window.location.href = redirectUrl;
+    }
+    else if (auctionId) {
+      window.location.href =
+        "/?auctionId=" + encodeURIComponent(auctionId);
+    } else {
+      window.location.href = "/";
+    }
 
     successEl.textContent = "Compte créé ! Redirection...";
 
