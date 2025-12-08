@@ -45,6 +45,22 @@ class Auction {
         });
     }
 
+    // On retire starting_price et end_date de la mise à jour
+    static update(id, { title, description }) {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                UPDATE auctions 
+                SET title = ?, description = ?
+                WHERE id = ?
+            `;
+            // On ne passe plus que title, description et id
+            db.run(sql, [title, description, id], function(err) {
+                if (err) reject(err);
+                else resolve(this.changes > 0);
+            });
+        });
+    }
+
     static addImage(auctionId, filename) {
         return new Promise((resolve, reject) => {
             db.run(

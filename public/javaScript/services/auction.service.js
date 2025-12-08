@@ -17,6 +17,13 @@ class AuctionService {
         });
     }
 
+    static async update(id, auctionData) {
+        return await apiFetch(`/auctions/${id}`, {
+            method: "PUT",
+            body: JSON.stringify(auctionData)
+        });
+    }
+
     static async placeBid(auctionId, amount) {
         return await apiFetch(`/auctions/${auctionId}/bids`, {
             method: "POST",

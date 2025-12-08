@@ -48,22 +48,27 @@ class AuctionService {
 
     // fonction incomplete
     static async modifyAuction(id, data, userId) {
-        // On cherche d'abord l'enchère pour voir si elle existe
+        // 1. Vérification existance
         const auction = await Auction.findById(id);
-
         if (!auction) {
             throw new Error("Enchère introuvable.");
         }
 
-        // On vérifie si l'utilisateur est le propriétaire
+        // 2. Vérification propriétaire
         if (auction.user_id !== userId) {
             throw new Error("Accès interdit : Vous n'êtes pas le vendeur de cet objet.");
         }
 
-        // on appelle le modèle pour faire la modif
-        // const updated = await Auction.update(); pas encore implementée dans le modele Auction.js
+        // 3. Préparation des données
+        const updateData = {
+            title: data.title || auction.title,
+            description: data.description || auction.description
+        };
+
+        // 4. Appel au modèle
+        await Auction.update(id, updateData);
         
-        // return updated;
+        return { id, ...updateData };
     }
 
     static async addMultipleImages(auctionId, userId, files) {

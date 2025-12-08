@@ -56,12 +56,18 @@ const addOne = async (req, res) => {
 }
 
 // pour l'instant pas implementé avec sqlite
-const modify = (req, res) => {
+const modify = async (req, res) => {
     try {
         const id = req.params.id;
         const data = req.body;
 
-        const modifiedAuction = AuctionService.modifyAuction(id, data);
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({ message: "Utilisateur non identifié" });
+        }
+
+        const userId = req.user.id;
+
+        const modifiedAuction = AuctionService.modifyAuction(id, data, userId);
 
         res.status(200).json({
             status: "success",
@@ -70,7 +76,10 @@ const modify = (req, res) => {
     } catch (error){
         if (error.message.includes("introuvable")) {
             res.status(404).json({ message: error.message });
-        } else {
+        } 
+        else if (error.message.includes("interdit")) {
+            res.status(403).json({ message: error.message });
+        }else {
             res.status(500).json({ message: "Erreur serveur", error: error.message });
         }
     }

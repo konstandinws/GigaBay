@@ -19,6 +19,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         renderPage(auction);
         setupBidSystem(auction);
 
+        checkOwner(auction);
+
     } catch (err) {
         console.error(err);
         const main = document.querySelector("main");
@@ -163,4 +165,50 @@ function setupBidSystem(auction) {
             errorEl.textContent = err.message || "Erreur lors de l'enchère.";
         }
     });
+}
+
+function checkOwner(auction) {
+    const user = AuthService.getCurrentUser();
+    
+    // Si pas connecté ou si l'ID ne correspond pas, on ne fait rien
+    if (!user || user.id !== auction.user_id) {
+        return;
+    }
+
+    // Sinon, on injecte le bouton
+    const container = document.querySelector(".auction-info-panel");
+    
+    // On s'assure que le conteneur est en position relative pour placer le bouton
+    if (getComputedStyle(container).position === 'static') {
+        container.style.position = 'relative';
+    }
+
+    const editBtn = document.createElement("button");
+    editBtn.innerHTML = "✏️ Modifier"; // Icône crayon
+    
+    // Style du bouton "Flottant" en haut à droite
+    editBtn.style.position = "absolute";
+    editBtn.style.top = "20px";
+    editBtn.style.right = "20px";
+    editBtn.style.background = "white";
+    editBtn.style.border = "1px solid #ccc";
+    editBtn.style.padding = "5px 10px";
+    editBtn.style.borderRadius = "5px";
+    editBtn.style.cursor = "pointer";
+    editBtn.style.fontWeight = "bold";
+    editBtn.style.color = "#333";
+    editBtn.style.boxShadow = "0 2px 5px rgba(0,0,0,0.1)";
+
+    // Effet hover
+    editBtn.onmouseover = () => editBtn.style.background = "#f0f0f0";
+    editBtn.onmouseout = () => editBtn.style.background = "white";
+
+    // Action au clic
+    editBtn.onclick = () => {
+        // Pour l'instant, on redirige vers une page d'édition (à créer plus tard)
+        // ou on réutilise new-auction avec un paramètre
+        window.location.href = `/new-auction?id=${auction.id}`; 
+    };
+
+    container.appendChild(editBtn);
 }
