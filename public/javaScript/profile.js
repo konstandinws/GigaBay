@@ -1,6 +1,6 @@
 import AuthService from "./services/auth.service.js";
 import AuctionService from "./services/auction.service.js";
-import { API_BASE_URL } from "./api/client.js";
+import { API_BASE_URL, apiFetch } from "./api/client.js";
 import { loadLayout } from "./components/layout.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -17,7 +17,38 @@ document.addEventListener("DOMContentLoaded", async () => {
     const logoutBtn = document.getElementById("logout-btn");
     if (logoutBtn) logoutBtn.addEventListener("click", () => AuthService.logout());
 
-    // Initialisation
+    try {
+        // On passe par le service maintenant !
+        const response = await AuthService.getProfile(); 
+        const freshUser = response.user;
+        
+        const balanceEl = document.querySelector(".balance-amount");
+        if(balanceEl) balanceEl.textContent = `${freshUser.balance || 0} €`;
+
+    } catch (e) { console.error("Erreur chargement solde"); }
+
+    const addFundsBtn = document.querySelector(".balance-card button");
+    if (addFundsBtn) {
+        addFundsBtn.onclick = async () => {
+            const amountStr = prompt("Combien voulez-vous ajouter ? (ex: 100)");
+            if (!amountStr) return;
+
+            const amount = parseFloat(amountStr);
+            if (isNaN(amount) || amount <= 0) {
+                alert("Montant invalide");
+                return;
+            }
+            try {
+                // On passe par le service ici aussi !
+                await AuthService.addFunds(amount);
+                alert("Fonds ajoutés avec succès !");
+                window.location.reload(); 
+            } catch (err) {
+                alert("Erreur : " + err.message);
+            }
+        };
+    }
+
     initTabs();
     loadMyAuctions(user.id);
 });

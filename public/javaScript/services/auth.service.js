@@ -41,6 +41,17 @@ class AuthService {
 
         return decoded;
     }
+
+    static async getProfile() {
+        return await apiFetch("/auth/me");
+    }
+
+    static async addFunds(amount) {
+        return await apiFetch("/auth/funds", {
+            method: "POST",
+            body: JSON.stringify({ amount })
+        });
+    }s
 }
 
 export default AuthService;

@@ -45,7 +45,6 @@ class Auction {
         });
     }
 
-    // On retire starting_price et end_date de la mise à jour
     static update(id, { title, description }) {
         return new Promise((resolve, reject) => {
             const sql = `

@@ -11,6 +11,8 @@ router.post("/register", authController.register);
 
 router.get("/me", authMiddleware, authController.me);
 
+router.post("/funds", authMiddleware, authController.addFunds);
+
 // ajouter un validation middleware
 
 export default router;
