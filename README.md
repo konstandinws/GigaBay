@@ -19,15 +19,21 @@ cp .env.example .env
 # copy .env.example .env
 ```
 
-4. Lancer l'application
+4. Alimenter la base de données
+```bash
+node ./seed.js
+```
+
+5. Lancer l'application
 ```bash
 npm start
 ```
+
 
 ## Vidéo de démonstration
 
 video de démonstration de notre projet sur YouTube :
 
-- Lien direct : [Regarder la vidéo sur YouTube](https://www.youtube.com/watch?v=9iUMYQEBTA8)
+- Lien direct de la video 1: [Regarder la vidéo sur YouTube](https://www.youtube.com/watch?v=9iUMYQEBTA8)
 
-- lien : https://www.youtube.com/watch?v=9iUMYQEBTA8
+
