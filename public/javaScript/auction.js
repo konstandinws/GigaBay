@@ -1,6 +1,7 @@
 import AuctionService from "./services/auction.service.js";
 import AuthService from "./services/auth.service.js";
 import { API_BASE_URL } from "./api/client.js";
+import { getRemainingTime } from "./utils/date.js";
 
 const params = new URLSearchParams(window.location.search);
 const auctionId = params.get("id");
@@ -99,33 +100,22 @@ function setupGallery(auction) {
 
 function startTimer(endDateStr) {
     const timerEl = document.getElementById("auction-timer");
-    const endDate = new Date(endDateStr).getTime();
 
     const update = () => {
-        const now = new Date().getTime();
-        const diff = endDate - now;
+        const timeData = getRemainingTime(endDateStr); // Utilisation de l'utilitaire
 
-        if (diff <= 0) {
-            timerEl.textContent = "VENTE TERMINÉE";
+        timerEl.textContent = timeData.text;
+
+        if (timeData.isFinished) {
             timerEl.style.color = "#e53935";
-            disableBidding(); // On désactive le formulaire
-            return;
+            disableBidding();
+        } else if (timeData.total < 3600000) {
+             timerEl.style.color = "#d32f2f"; // Orange si moins d'1h
         }
-
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        const minutes = Math.floor((diff / 1000 / 60) % 60);
-        const seconds = Math.floor((diff / 1000) % 60);
-
-        let text = "";
-        if (days > 0) text += `${days}j `;
-        text += `${hours}h ${minutes}m ${seconds}s`;
-        
-        timerEl.textContent = text;
     };
 
-    update(); // Premier appel immédiat
-    setInterval(update, 1000); // Mise à jour chaque seconde
+    update(); 
+    setInterval(update, 1000); 
 }
 
 function disableBidding() {
