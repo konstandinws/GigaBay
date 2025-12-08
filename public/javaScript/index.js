@@ -9,7 +9,6 @@ let currentPage = 1;
 const LIMIT = 12; 
 let isFilterActive = false;
 
-// Lance le compte à rebours
 function startCountdown() {
     if (timerInterval) clearInterval(timerInterval);
     timerInterval = setInterval(() => {
@@ -29,7 +28,7 @@ function startCountdown() {
     }, 1000);
 }
 
-// Affiche les enchères de manière sécurisée (Sans innerHTML)
+// Affiche les enchères Sans innerHTML
 function displayAuctions(list, append = false) {
   const container = document.getElementById("auctions-list");
   
@@ -73,7 +72,6 @@ function displayAuctions(list, append = false) {
         const img = document.createElement("img");
         img.src = imageUrl;
         img.alt = auction.title;
-        // Plus de style.cssText ici ! Tout est dans .img-wrapper img
         imgContainer.appendChild(img);
     } else {
         const noImageText = document.createElement("span");
@@ -82,14 +80,12 @@ function displayAuctions(list, append = false) {
         imgContainer.appendChild(noImageText);
     }
 
-    // 3. Badge Prix
     const currentPrice = parseFloat(auction.current_price);
     const startPrice = parseFloat(auction.starting_price);
     const isBiddingStarted = currentPrice > startPrice;
     
     const badge = document.createElement("div");
     badge.className = isBiddingStarted ? "auction-badge" : "auction-badge starting";
-    // SAFE : textContent échappe les caractères spéciaux
     badge.textContent = isBiddingStarted ? `Enchère : ${currentPrice} €` : `Mise à prix : ${startPrice} €`;
 
     // 4. Corps de la carte (Titre + Lot)
@@ -98,7 +94,7 @@ function displayAuctions(list, append = false) {
 
     const title = document.createElement("div");
     title.className = "auction-title";
-    title.textContent = auction.title; // SAFE : C'est ici que la faille XSS est bloquée !
+    title.textContent = auction.title; 
 
     const lotRow = document.createElement("div");
     lotRow.className = "auction-lot-row";
@@ -108,7 +104,7 @@ function displayAuctions(list, append = false) {
     
     const lotBox = document.createElement("div");
     lotBox.className = "auction-lot-box";
-    lotBox.textContent = `Lot n°${auction.id}`; // Safe
+    lotBox.textContent = `Lot n°${auction.id}`; 
 
     const line2 = document.createElement("div");
     line2.className = "auction-lot-line";
@@ -116,7 +112,6 @@ function displayAuctions(list, append = false) {
     lotRow.append(line1, lotBox, line2);
     body.append(title, lotRow);
 
-    // 5. Footer (Timer)
     const footer = document.createElement("div");
     footer.className = "card-footer";
     footer.style.cssText = "justify-content: center; padding-top: 15px; padding-bottom: 15px;";
@@ -131,7 +126,7 @@ function displayAuctions(list, append = false) {
     const timeInfo = getRemainingTime(auction.end_date);
     const timerSpan = document.createElement("span");
     timerSpan.className = "live-timer";
-    timerSpan.dataset.end = auction.end_date; // Safe car date ISO générée par le serveur/js
+    timerSpan.dataset.end = auction.end_date;
     timerSpan.textContent = timeInfo.text;
 
     timeDiv.append(icon, timerSpan);
@@ -171,7 +166,6 @@ async function loadAuctions(page) {
     } catch (err) {
         console.error("Erreur chargement:", err);
         const container = document.getElementById("auctions-list");
-        // Message d'erreur statique -> Safe
         if(page === 1) container.innerHTML = `<p class="error">Impossible de charger les enchères.</p>`;
     }
 }

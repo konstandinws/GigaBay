@@ -16,7 +16,7 @@ const passwordInput = document.getElementById("login-password");
 const errorEl = document.getElementById("login-error");
 
 form.addEventListener("submit", async function (e) {
-  e.preventDefault(); // ⚠️ empêche le rechargement de la page
+  e.preventDefault(); // 
   errorEl.textContent = "";
 
   const email = emailInput.value.trim();
@@ -44,7 +44,7 @@ form.addEventListener("submit", async function (e) {
         passwordInput.value = ""; // On vide le mot de passe pour qu'il réessaie
         passwordInput.focus();    // On remet le curseur dedans
     } 
-    // Si le serveur est en panne (500)
+    // Si le serveur est en panne (
     else if (err.status === 500) {
         errorEl.textContent = "Serveur indisponible, réessayez plus tard.";
     }

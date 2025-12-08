@@ -38,7 +38,7 @@ form.addEventListener("submit", async function (e) {
     
     Validator.validateRegistration(username, email, password);
 
-    // L'inscription connecte désormais automatiquement !
+
     await AuthService.register(username, email, password);
 
     successEl.textContent = "Compte créé ! Redirection...";

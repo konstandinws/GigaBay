@@ -46,12 +46,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-// ... (Gardez le reste de vos fonctions renderPage, setupGallery, etc. telles quelles)
-// ... (Elles étaient déjà safe grâce aux modifications précédentes)
+
 
 function renderPage(auction) {
-    // ... Copiez votre code existant ici ou gardez le fichier tel quel si vous n'avez pas touché à cette partie ...
-    // Le code ci-dessous est juste pour rappel, utilisez celui que vous avez déjà s'il est bon.
+
     document.title = auction.title;
     document.getElementById("auction-title").textContent = auction.title;
     document.getElementById("auction-description").textContent = auction.description || "Aucune description.";
@@ -184,9 +182,9 @@ function checkOwner(auction) {
     }
 
     const editBtn = document.createElement("button");
-    editBtn.innerHTML = "✏️ Modifier"; // Icône crayon
+    editBtn.innerHTML = "✏️ Modifier"; 
     
-    // Style du bouton "Flottant" en haut à droite
+    // Style du boutonen haut à droite
     editBtn.style.position = "absolute";
     editBtn.style.top = "20px";
     editBtn.style.right = "20px";
@@ -199,14 +197,11 @@ function checkOwner(auction) {
     editBtn.style.color = "#333";
     editBtn.style.boxShadow = "0 2px 5px rgba(0,0,0,0.1)";
 
-    // Effet hover
     editBtn.onmouseover = () => editBtn.style.background = "#f0f0f0";
     editBtn.onmouseout = () => editBtn.style.background = "white";
 
-    // Action au clic
     editBtn.onclick = () => {
-        // Pour l'instant, on redirige vers une page d'édition (à créer plus tard)
-        // ou on réutilise new-auction avec un paramètre
+
         window.location.href = `/new-auction?id=${auction.id}`; 
     };
 

@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
           priceInput.value = auction.starting_price;
           priceInput.disabled = true; // Empêche la modification
-          priceInput.title = "Le prix de départ ne peut pas être modifié"; // Info bulle
+          priceInput.title = "Le prix de départ ne peut pas être modifié";
           priceInput.style.backgroundColor = "#e9ecef"; // Visuel "grisé"
           
 

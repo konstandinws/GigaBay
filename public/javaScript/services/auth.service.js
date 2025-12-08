@@ -10,7 +10,7 @@ class AuthService {
 
         if (data.token) {
             localStorage.setItem("token", data.token);
-            // On ne stocke plus l'user, juste le token suffit !
+            // On ne stocke juste le token  
         }
         return data.user;
     }
@@ -21,7 +21,7 @@ class AuthService {
             body: JSON.stringify({ username, email, password })
         });
 
-        // SI on reçoit un token (ce qui est le cas maintenant), on le stocke
+        // SI on reçoit un token, on le stocke
         if (data.token) {
             localStorage.setItem("token", data.token);
         }

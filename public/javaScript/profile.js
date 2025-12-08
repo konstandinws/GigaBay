@@ -93,8 +93,8 @@ function createAuctionCard(auction) {
     card.title = "Voir les détails";
     card.onclick = () => window.location.href = `/auction?id=${auction.id}`;
 
-    // 2. Image (Correction du bug ici !)
-    const imgContainer = document.createElement("div"); // <--- C'était manquant !
+    // 2. Image 
+    const imgContainer = document.createElement("div"); 
     imgContainer.className = "img-wrapper img-wrapper-small";
 
     let hasImage = false;
@@ -141,7 +141,7 @@ function createAuctionCard(auction) {
     // Assemblage
     infoDiv.append(title, priceDiv, dateDiv);
     
-    // IMPORTANT : On ajoute imgContainer (la div grise ou l'image), pas 'img' direct
+    // On ajoute imgContainer, pas 'img' direct
     card.append(imgContainer, infoDiv); 
 
     return card;
