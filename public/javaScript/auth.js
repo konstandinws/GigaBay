@@ -1,47 +1,59 @@
 import AuthService from "./services/auth.service.js"; 
 
-// Fonction principale
 export function updateHeader() {
-    // 1. On cible la zone où sont les boutons
     const headerActions = document.querySelector(".header-actions");
-    if (!headerActions) return; // Sécurité si la div n'existe pas
+    if (!headerActions) return; 
 
-    // 2. On récupère l'utilisateur en mémoire
+    // On nettoie tout le contenu actuel
+    headerActions.innerHTML = "";
+
     const user = AuthService.getCurrentUser();
 
-    // 3. SCÉNARIO : CONNECTÉ ✅
+    // --- 1. BOUTON LANGUE (Commun) ---
+    // On le recrée ou on le garde, ici je le recrée pour l'ordre
+    const langDiv = document.createElement("div");
+    langDiv.className = "lang";
+    langDiv.innerHTML = "🇫🇷 <span>French</span>"; // Safe car statique
+
+    // --- SCÉNARIO : CONNECTÉ ✅ ---
     if (user) {
-        // On remplace le HTML par le bouton Profil et Déconnexion
-        // J'utilise user.username, ou user.email si username n'existe pas
         const displayName = user.username || "Mon Profil";
 
-        headerActions.innerHTML = `
-            <a href="/profile" class="btn-connexion" style="background-color: #447c00;">
-                👤 ${displayName}
-            </a>
-            <button id="logout-btn" class="btn-inscription" style="cursor: pointer;">
-                🚪 Déconnexion
-            </button>
-            <div class="lang">
-                🇫🇷 <span>French</span>
-            </div>
-        `;
+        // Bouton Profil
+        const profileBtn = document.createElement("a");
+        profileBtn.href = "/profile";
+        profileBtn.className = "btn-connexion";
+        profileBtn.style.backgroundColor = "#447c00";
+        // SAFE : textContent empêche l'interprétation HTML du pseudo
+        profileBtn.textContent = `👤 ${displayName}`;
 
-        // On active le bouton déconnexion qu'on vient de créer
-        document.getElementById("logout-btn").addEventListener("click", () => {
+        // Bouton Déconnexion
+        const logoutBtn = document.createElement("button");
+        logoutBtn.className = "btn-inscription";
+        logoutBtn.style.cursor = "pointer";
+        logoutBtn.textContent = "🚪 Déconnexion";
+        logoutBtn.addEventListener("click", () => {
             AuthService.logout(); 
         });
+
+        // On ajoute les éléments dans l'ordre
+        headerActions.append(profileBtn, logoutBtn, langDiv);
     } 
     
-    // 4. SCÉNARIO : PAS CONNECTÉ ❌
+    // --- SCÉNARIO : PAS CONNECTÉ ❌ ---
     else {
-        // On remet les boutons par défaut
-        headerActions.innerHTML = `
-            <a href="/login" class="btn-connexion">👤 Connexion</a>
-            <a href="/register" class="btn-inscription">🧾 Inscription</a>
-            <div class="lang">
-                🇫🇷 <span>French</span>
-            </div>
-        `;
+        // Bouton Connexion
+        const loginBtn = document.createElement("a");
+        loginBtn.href = "/login";
+        loginBtn.className = "btn-connexion";
+        loginBtn.textContent = "👤 Connexion";
+
+        // Bouton Inscription
+        const registerBtn = document.createElement("a");
+        registerBtn.href = "/register";
+        registerBtn.className = "btn-inscription";
+        registerBtn.textContent = "🧾 Inscription";
+
+        headerActions.append(loginBtn, registerBtn, langDiv);
     }
 }

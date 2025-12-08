@@ -1,15 +1,15 @@
 import AuctionService from "./services/auction.service.js";
 import { API_BASE_URL } from "./api/client.js";
-import { getRemainingTime } from "./utils/date.js"; // Import de votre nouvelle fonction utilitaire
+import { getRemainingTime } from "./utils/date.js";
 import { loadLayout } from "./components/layout.js";
 
 let allAuctions = [];
 let timerInterval = null;
 let currentPage = 1;
-const LIMIT = 12; // Nombre d'enchères par chargement
+const LIMIT = 12; 
 let isFilterActive = false;
 
-// Lance le compte à rebours en mettant à jour le DOM chaque seconde
+// Lance le compte à rebours
 function startCountdown() {
     if (timerInterval) clearInterval(timerInterval);
     timerInterval = setInterval(() => {
@@ -19,7 +19,6 @@ function startCountdown() {
             const timeData = getRemainingTime(endDate); 
             el.textContent = timeData.text;
             
-            // Gestion des couleurs (rouge si fini, orange si bientôt fini)
             if (timeData.isFinished) {
                 el.style.color = "#e53935"; 
                 el.style.fontWeight = "bold";
@@ -30,35 +29,32 @@ function startCountdown() {
     }, 1000);
 }
 
-// Affiche les enchères dans le DOM
-// append = true signifie qu'on ajoute à la suite (pour le bouton "Charger plus")
+// Affiche les enchères de manière sécurisée (Sans innerHTML)
 function displayAuctions(list, append = false) {
   const container = document.getElementById("auctions-list");
   
-  // Si on remplace tout (pas d'append), on vide d'abord le conteneur
   if (!append) {
-      container.innerHTML = "";
+      container.innerHTML = ""; // On peut vider avec innerHTML, c'est safe
   }
 
-  // Gestion du cas vide
   if ((!list || list.length === 0) && !append) {
+    // Ici le HTML est écrit en dur par nous, donc c'est safe
     container.innerHTML = `<div class="empty-state" style="grid-column: 1/-1;"><p>Aucune enchère trouvée.</p></div>`;
     return;
   }
 
   list.forEach((auction) => {
+    // 1. Création de la carte
     const card = document.createElement("div");
     card.className = "card auction-card";
     card.style.cursor = "pointer";
     
-    // Redirection au clic
     card.addEventListener("click", () => {
         window.location.href = `/auction?id=${auction.id}`;
     });
 
-    // --- GESTION IMAGE (Simplifiée : on prend la 1ère image dispo) ---
+    // 2. Gestion de l'image
     let imageUrl = "/img/default-placeholder.png"; 
-    
     if (auction.images && auction.images.length > 0) {
         imageUrl = `/uploads/${auction.images[0]}`;
     } else if (auction.image_url) {
@@ -66,51 +62,79 @@ function displayAuctions(list, append = false) {
         imageUrl = siteUrl + auction.image_url;
     }
 
-    // --- PRIX & BADGES ---
+    const imgContainer = document.createElement("div");
+    imgContainer.style.cssText = "height: 220px; overflow: hidden; background: #eee;";
+    
+    const img = document.createElement("img");
+    img.src = imageUrl;
+    img.alt = auction.title; // SAFE : alt ne peut pas exécuter de script
+    img.style.cssText = "width: 100%; height: 100%; object-fit: cover;";
+    
+    imgContainer.appendChild(img);
+
+    // 3. Badge Prix
     const currentPrice = parseFloat(auction.current_price);
     const startPrice = parseFloat(auction.starting_price);
     const isBiddingStarted = currentPrice > startPrice;
-    const badgeText = isBiddingStarted ? `Enchère : ${currentPrice} €` : `Mise à prix : ${startPrice} €`;
-    const badgeClass = isBiddingStarted ? "auction-badge" : "auction-badge starting";
+    
+    const badge = document.createElement("div");
+    badge.className = isBiddingStarted ? "auction-badge" : "auction-badge starting";
+    // SAFE : textContent échappe les caractères spéciaux
+    badge.textContent = isBiddingStarted ? `Enchère : ${currentPrice} €` : `Mise à prix : ${startPrice} €`;
 
-    // Calcul initial du temps pour l'affichage immédiat
+    // 4. Corps de la carte (Titre + Lot)
+    const body = document.createElement("div");
+    body.className = "auction-body";
+
+    const title = document.createElement("div");
+    title.className = "auction-title";
+    title.textContent = auction.title; // SAFE : C'est ici que la faille XSS est bloquée !
+
+    const lotRow = document.createElement("div");
+    lotRow.className = "auction-lot-row";
+
+    const line1 = document.createElement("div");
+    line1.className = "auction-lot-line";
+    
+    const lotBox = document.createElement("div");
+    lotBox.className = "auction-lot-box";
+    lotBox.textContent = `Lot n°${auction.id}`; // Safe
+
+    const line2 = document.createElement("div");
+    line2.className = "auction-lot-line";
+
+    lotRow.append(line1, lotBox, line2);
+    body.append(title, lotRow);
+
+    // 5. Footer (Timer)
+    const footer = document.createElement("div");
+    footer.className = "card-footer";
+    footer.style.cssText = "justify-content: center; padding-top: 15px; padding-bottom: 15px;";
+
+    const timeDiv = document.createElement("div");
+    timeDiv.className = "auction-time";
+
+    const icon = document.createElement("div");
+    icon.className = "auction-clock-icon";
+    icon.textContent = "⏱";
+
     const timeInfo = getRemainingTime(auction.end_date);
+    const timerSpan = document.createElement("span");
+    timerSpan.className = "live-timer";
+    timerSpan.dataset.end = auction.end_date; // Safe car date ISO générée par le serveur/js
+    timerSpan.textContent = timeInfo.text;
 
-    // Construction du HTML de la carte
-    card.innerHTML = `
-        <div style="height: 220px; overflow: hidden; background: #eee;">
-            <img src="${imageUrl}" alt="${auction.title}" style="width: 100%; height: 100%; object-fit: cover;">
-        </div>
+    timeDiv.append(icon, timerSpan);
+    footer.appendChild(timeDiv);
 
-        <div class="${badgeClass}">${badgeText}</div>
-        
-        <div class="auction-body">
-            <div class="auction-title">${auction.title}</div>
-            <div class="auction-lot-row">
-                <div class="auction-lot-line"></div>
-                <div class="auction-lot-box">Lot n°${auction.id}</div>
-                <div class="auction-lot-line"></div>
-            </div>
-        </div>
-
-        <div class="card-footer" style="justify-content: center; padding-top: 15px; padding-bottom: 15px;">
-            <div class="auction-time">
-                <div class="auction-clock-icon">⏱</div>
-                <span class="live-timer" data-end="${auction.end_date}">
-                    ${timeInfo.text}
-                </span>
-            </div>
-        </div>
-    `;
-
+    // Assemblage final
+    card.append(imgContainer, badge, body, footer);
     container.appendChild(card);
   });
 
-  // Relance le timer dynamique
   startCountdown();
 }
 
-// Charge les enchères depuis l'API avec pagination
 async function loadAuctions(page) {
     const btn = document.getElementById("load-more-btn");
     
@@ -120,16 +144,14 @@ async function loadAuctions(page) {
 
         if (page === 1) {
             allAuctions = newAuctions;
-            displayAuctions(newAuctions, false); // Remplace tout (Page 1)
+            displayAuctions(newAuctions, false); 
         } else {
             allAuctions = [...allAuctions, ...newAuctions];
-            displayAuctions(newAuctions, true); // Ajoute à la suite (Page > 1)
+            displayAuctions(newAuctions, true);
         }
 
-        // Gestion de la visibilité du bouton "Charger plus"
         if (btn) {
             if (newAuctions.length < LIMIT) {
-                // Si on a reçu moins d'éléments que la limite, c'est qu'il n'y a plus rien après
                 btn.style.display = "none";
             } else {
                 btn.style.display = "inline-block";
@@ -139,17 +161,15 @@ async function loadAuctions(page) {
     } catch (err) {
         console.error("Erreur chargement:", err);
         const container = document.getElementById("auctions-list");
+        // Message d'erreur statique -> Safe
         if(page === 1) container.innerHTML = `<p class="error">Impossible de charger les enchères.</p>`;
     }
 }
 
-// Initialisation au chargement de la page
 document.addEventListener("DOMContentLoaded", () => {
     loadLayout();
-
     loadAuctions(currentPage);
 
-    // 2. Configurer le bouton "Charger plus"
     const btn = document.getElementById("load-more-btn");
     if(btn) {
         btn.addEventListener("click", () => {
@@ -158,27 +178,22 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 3. Configurer les filtres par catégorie
     const categoryCards = document.querySelectorAll(".category-card");
     categoryCards.forEach((card) => {
         card.addEventListener("click", () => {
-            // On cache le bouton "charger plus" quand un filtre est actif
             const loadMoreBtn = document.getElementById("load-more-btn");
             if(loadMoreBtn) loadMoreBtn.style.display = "none";
             
             isFilterActive = true;
 
-            // Gestion visuelle des cartes de catégorie
             categoryCards.forEach(c => c.classList.remove("active"));
             card.classList.add("active");
             
             const category = (card.dataset.category || "").toLowerCase();
             
             if (!category) {
-                // Si on clique sur une catégorie vide ou "Tout", on réaffiche tout
                 displayAuctions(allAuctions, false);
             } else {
-                // Filtrage côté client sur les enchères déjà chargées
                 const filtered = allAuctions.filter(a => {
                     const content = (a.title + " " + (a.description || "")).toLowerCase();
                     return content.includes(category);
