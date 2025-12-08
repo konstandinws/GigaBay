@@ -7,18 +7,10 @@ export function loadLayout() {
     // 2. Le HTML du Header (Topbar + Header + Nav)
     // Note: J'ai corrigé les chemins d'images vers "/img" (racine) pour que ça marche partout
     const headerHTML = `
-    <div class="topbar">
-        <div class="contact-info">
-            <span>📞 (0032) 0 000 00 00</span>
-            <span>✉️ exemple@nnnn.be</span>
-        </div>
-    </div>
-
     <header class="main-header">
         <div class="logo">
             <a href="/" style="text-decoration:none; display:flex; align-items:center; gap:8px;">
-                <img src="/img/logo.png" alt="Logo" />
-                <span class="logo-text"><b>Nom</b>Du Site</span>
+                <span class="logo-text"><b>Giga</b>bay</span>
             </a>
         </div>
 
@@ -34,10 +26,7 @@ export function loadLayout() {
 
     <nav class="main-nav">
         <a href="/" class="nav-link ${path === '/' || path === '/index.html' ? 'active' : ''}">Enchères</a>
-        <a href="#" class="nav-link">Lots</a>
         <a href="/new-auction" class="nav-link ${path.includes('new-auction') ? 'active' : ''}">Mettre aux enchères</a>
-        <a href="#" class="nav-link">À propos</a>
-        <a href="#" class="nav-link">Contact</a>
     </nav>
     `;
 

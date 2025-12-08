@@ -251,7 +251,7 @@ body {
 }
 
 .hero-left {
-  flex: 1;
+  flex: 3;
   max-width: 520px;
 }
 
