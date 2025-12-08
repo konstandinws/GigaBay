@@ -2,6 +2,7 @@ import AuctionService from "./services/auction.service.js";
 import AuthService from "./services/auth.service.js";
 import { API_BASE_URL } from "./api/client.js";
 import { getRemainingTime } from "./utils/date.js";
+import { loadLayout } from "./components/layout.js";
 
 const params = new URLSearchParams(window.location.search);
 const auctionId = params.get("id");
@@ -11,6 +12,9 @@ if (!auctionId) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+
+    loadLayout();
+    
     try {
         const auction = await AuctionService.getOne(auctionId);
         

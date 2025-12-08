@@ -1,9 +1,12 @@
 import AuthService from "./services/auth.service.js";
 import AuctionService from "./services/auction.service.js";
 import { API_BASE_URL } from "./api/client.js";
-
+import { loadLayout } from "./components/layout.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
+
+    loadLayout();
+
     // Vérification Connexion
     const user = AuthService.getCurrentUser();
 

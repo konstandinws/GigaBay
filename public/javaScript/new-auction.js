@@ -1,7 +1,10 @@
 import AuctionService from "./services/auction.service.js";
 import AuthService from "./services/auth.service.js";
+import { loadLayout } from "./components/layout.js";
 
 document.addEventListener("DOMContentLoaded", function () {
+
+  loadLayout();
   
   const form = document.getElementById("new-auction-form");
   const errorEl = document.getElementById("auction-error");

@@ -45,6 +45,3 @@ export function updateHeader() {
         `;
     }
 }
-
-// Lancer la fonction dès que la page est chargée
-document.addEventListener("DOMContentLoaded", updateHeader);

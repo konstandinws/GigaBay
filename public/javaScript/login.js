@@ -1,4 +1,9 @@
 import AuthService from "./services/auth.service.js";
+import { loadLayout } from "./components/layout.js";
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadLayout(); 
+});
 
 function getQueryParam(param) {
   const params = new URLSearchParams(window.location.search);

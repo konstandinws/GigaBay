@@ -1,6 +1,7 @@
 import AuctionService from "./services/auction.service.js";
 import { API_BASE_URL } from "./api/client.js";
 import { getRemainingTime } from "./utils/date.js"; // Import de votre nouvelle fonction utilitaire
+import { loadLayout } from "./components/layout.js";
 
 let allAuctions = [];
 let timerInterval = null;
@@ -144,7 +145,8 @@ async function loadAuctions(page) {
 
 // Initialisation au chargement de la page
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Charger la première page
+    loadLayout();
+
     loadAuctions(currentPage);
 
     // 2. Configurer le bouton "Charger plus"

@@ -1,5 +1,10 @@
 import AuthService from "./services/auth.service.js";
 import Validator from "./utils/validator.js";
+import { loadLayout } from "./components/layout.js";
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadLayout();
+});
 
 function getAuctionIdFromUrl() {
   const params = new URLSearchParams(window.location.search);
