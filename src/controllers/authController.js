@@ -19,12 +19,14 @@ const login = async (req, res) => {
 
 const register = async (req, res) => {
   try {
-    const newUser = await AuthService.register(req.body);
+    // On récupère user ET token du service
+    const { user, token } = await AuthService.register(req.body);
 
     res.status(201).json({
       status: "success",
       message: "Compte créé avec succès",
-      user: newUser,
+      user: user,
+      token: token 
     });
   } catch (error) {
     res.status(400).json({ message: error.message });

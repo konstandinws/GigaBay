@@ -38,19 +38,22 @@ form.addEventListener("submit", async function (e) {
     
     Validator.validateRegistration(username, email, password);
 
-    const response = await AuthService.register(username, email, password);
+    // L'inscription connecte désormais automatiquement !
+    await AuthService.register(username, email, password);
 
-    successEl.textContent =
-      "Compte créé avec succès, tu peux te connecter.";
+    successEl.textContent = "Compte créé ! Redirection...";
 
+    // On redirige direct vers l'accueil (ou l'enchère précédente)
     setTimeout(() => {
       if (auctionId) {
-        window.location.href =
-          "login.html?auctionId=" + encodeURIComponent(auctionId);
+        // Retour vers l'enchère qu'on voulait voir
+        window.location.href = "/auction?id=" + encodeURIComponent(auctionId);
       } else {
-        window.location.href = "/login";
+        // Sinon accueil
+        window.location.href = "/";
       }
     }, 800);
+
   } catch (err) {
     errorEl.textContent = err.message;
   }

@@ -16,10 +16,17 @@ class AuthService {
     }
 
     static async register(username, email, password) {
-        return await apiFetch("/auth/register", {
+        const data = await apiFetch("/auth/register", {
             method: "POST",
             body: JSON.stringify({ username, email, password })
         });
+
+        // SI on reçoit un token (ce qui est le cas maintenant), on le stocke
+        if (data.token) {
+            localStorage.setItem("token", data.token);
+        }
+
+        return data.user;
     }
 
     static logout() {
