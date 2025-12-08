@@ -60,6 +60,16 @@ class Auction {
         });
     }
 
+    static findByUserId(userId) {
+        return new Promise((resolve, reject) => {
+            const sql = "SELECT * FROM auctions WHERE user_id = ? ORDER BY id DESC";
+            db.all(sql, [userId], (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
+    }
+
     static addImage(auctionId, filename) {
         return new Promise((resolve, reject) => {
             db.run(

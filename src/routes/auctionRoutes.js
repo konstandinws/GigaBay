@@ -9,6 +9,8 @@ const router = express.Router();
 //liste toutes les enchères
 router.get("/", auctionController.getAll);
 
+router.get("/mine", authMiddleware, auctionController.getMine);
+
 //enchère par id
 router.get("/:id", auctionController.getOne);
 

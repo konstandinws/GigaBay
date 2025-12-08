@@ -71,6 +71,10 @@ class AuctionService {
         return { id, ...updateData };
     }
 
+    static async getAuctionsByUser(userId) {
+        return await Auction.findByUserId(userId);
+    }
+
     static async addMultipleImages(auctionId, userId, files) {
         const auction = await Auction.findById(auctionId);
         if (!auction) throw new Error("Enchère introuvable");

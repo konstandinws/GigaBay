@@ -53,24 +53,34 @@ function displayAuctions(list, append = false) {
         window.location.href = `/auction?id=${auction.id}`;
     });
 
-    // 2. Gestion de l'image
-    let imageUrl = "/img/default-placeholder.png"; 
+    const imgContainer = document.createElement("div");
+    imgContainer.className = "img-wrapper img-wrapper-large";
+    
+    let hasImage = false;
+    let imageUrl = "";
+
+    // Vérification de l'image
     if (auction.images && auction.images.length > 0) {
         imageUrl = `/uploads/${auction.images[0]}`;
+        hasImage = true;
     } else if (auction.image_url) {
         const siteUrl = API_BASE_URL.replace("/api", "");
         imageUrl = siteUrl + auction.image_url;
+        hasImage = true;
     }
 
-    const imgContainer = document.createElement("div");
-    imgContainer.style.cssText = "height: 220px; overflow: hidden; background: #eee;";
-    
-    const img = document.createElement("img");
-    img.src = imageUrl;
-    img.alt = auction.title; // SAFE : alt ne peut pas exécuter de script
-    img.style.cssText = "width: 100%; height: 100%; object-fit: cover;";
-    
-    imgContainer.appendChild(img);
+    if (hasImage) {
+        const img = document.createElement("img");
+        img.src = imageUrl;
+        img.alt = auction.title;
+        // Plus de style.cssText ici ! Tout est dans .img-wrapper img
+        imgContainer.appendChild(img);
+    } else {
+        const noImageText = document.createElement("span");
+        noImageText.className = "img-placeholder-text"; // <--- Classe CSS
+        noImageText.textContent = "Pas d'image";
+        imgContainer.appendChild(noImageText);
+    }
 
     // 3. Badge Prix
     const currentPrice = parseFloat(auction.current_price);

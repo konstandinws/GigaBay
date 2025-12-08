@@ -128,15 +128,10 @@ document.addEventListener("DOMContentLoaded", async function () {
           priceInput.title = "Le prix de départ ne peut pas être modifié"; // Info bulle
           priceInput.style.backgroundColor = "#e9ecef"; // Visuel "grisé"
           
-          if (auction.end_date) {
-              const dateObj = new Date(auction.end_date);
-              dateObj.setMinutes(dateObj.getMinutes() - dateObj.getTimezoneOffset());
-              endDateInput.value = dateObj.toISOString().slice(0, 16);
-              
+
               endDateInput.disabled = true; // Empêche la modification
               endDateInput.title = "La date de fin ne peut pas être modifiée";
               endDateInput.style.backgroundColor = "#e9ecef";
-          }
 
 
       } catch (err) {

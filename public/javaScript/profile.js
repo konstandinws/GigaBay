@@ -1,24 +1,26 @@
 import AuthService from "./services/auth.service.js";
 import AuctionService from "./services/auction.service.js";
-import { API_BASE_URL, apiFetch } from "./api/client.js";
+import { API_BASE_URL } from "./api/client.js"; // Juste l'URL pour les images
 import { loadLayout } from "./components/layout.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
     loadLayout();
 
     const user = AuthService.getCurrentUser();
-    if (!user) return; // Sécurité
+    if (!user) return; 
 
     // Remplissage infos profil
-    document.getElementById("user-name").textContent = user.username || "Utilisateur";
-    document.getElementById("user-email").textContent = user.email || "";
+    const nameEl = document.getElementById("user-name");
+    const emailEl = document.getElementById("user-email");
+    if(nameEl) nameEl.textContent = user.username || "Utilisateur";
+    if(emailEl) emailEl.textContent = user.email || "";
 
     // Bouton déconnexion
     const logoutBtn = document.getElementById("logout-btn");
     if (logoutBtn) logoutBtn.addEventListener("click", () => AuthService.logout());
 
+    // Gestion du solde via le Service
     try {
-        // On passe par le service maintenant !
         const response = await AuthService.getProfile(); 
         const freshUser = response.user;
         
@@ -27,6 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     } catch (e) { console.error("Erreur chargement solde"); }
 
+    // Bouton ajouter des fonds
     const addFundsBtn = document.querySelector(".balance-card button");
     if (addFundsBtn) {
         addFundsBtn.onclick = async () => {
@@ -39,7 +42,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
             try {
-                // On passe par le service ici aussi !
                 await AuthService.addFunds(amount);
                 alert("Fonds ajoutés avec succès !");
                 window.location.reload(); 
@@ -59,19 +61,17 @@ async function loadMyAuctions(userId) {
     const container = document.getElementById("created-auctions-list");
     if (!container) return;
     
-    container.innerHTML = ""; // Reset propre
+    container.innerHTML = "";
 
     try {
-        const response = await AuctionService.getAll();
-        const allAuctions = response.data || [];
-        const myAuctions = allAuctions.filter(a => a.user_id === userId);
+        const response = await AuctionService.getMine();
+        const myAuctions = response.data || [];
 
         if (myAuctions.length === 0) {
             container.innerHTML = `<div class="empty-state">Vous n'avez aucune enchère en cours.</div>`;
             return;
         }
 
-        // Boucle propre : une ligne par carte
         myAuctions.forEach(auction => {
             const card = createAuctionCard(auction);
             container.appendChild(card);
@@ -93,15 +93,33 @@ function createAuctionCard(auction) {
     card.title = "Voir les détails";
     card.onclick = () => window.location.href = `/auction?id=${auction.id}`;
 
-    // 2. Image
-    const img = document.createElement("img");
+    // 2. Image (Correction du bug ici !)
+    const imgContainer = document.createElement("div"); // <--- C'était manquant !
+    imgContainer.className = "img-wrapper img-wrapper-small";
+
+    let hasImage = false;
+    let imageUrl = "";
     const siteUrl = API_BASE_URL.replace("/api", "");
     
-    if (auction.images?.length > 0) img.src = `/uploads/${auction.images[0]}`;
-    else if (auction.image_url) img.src = siteUrl + auction.image_url;
-    else img.src = "/img/default-placeholder.png";
-    
-    img.alt = auction.title;
+    if (auction.images?.length > 0) {
+        imageUrl = `/uploads/${auction.images[0]}`;
+        hasImage = true;
+    } else if (auction.image_url) {
+        imageUrl = siteUrl + auction.image_url;
+        hasImage = true;
+    }
+
+    if (hasImage) {
+        const img = document.createElement("img");
+        img.src = imageUrl;
+        img.alt = auction.title;
+        imgContainer.appendChild(img);
+    } else {
+        const noTxt = document.createElement("span");
+        noTxt.className = "img-placeholder-text";
+        noTxt.textContent = "Aucune image";
+        imgContainer.appendChild(noTxt);
+    }
 
     // 3. Infos
     const infoDiv = document.createElement("div");
@@ -122,7 +140,9 @@ function createAuctionCard(auction) {
 
     // Assemblage
     infoDiv.append(title, priceDiv, dateDiv);
-    card.append(img, infoDiv);
+    
+    // IMPORTANT : On ajoute imgContainer (la div grise ou l'image), pas 'img' direct
+    card.append(imgContainer, infoDiv); 
 
     return card;
 }
@@ -136,7 +156,8 @@ function initTabs() {
             
             trigger.classList.add("active");
             const targetId = trigger.dataset.target;
-            document.getElementById(targetId)?.classList.add("active");
+            const content = document.getElementById(targetId);
+            if(content) content.classList.add("active");
         });
     });
 }

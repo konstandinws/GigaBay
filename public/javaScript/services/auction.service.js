@@ -49,6 +49,10 @@ class AuctionService {
         }
         return await response.json();
     }
+
+    static async getMine() {
+        return await apiFetch("/auctions/mine");
+    }
 }
 
 export default AuctionService;

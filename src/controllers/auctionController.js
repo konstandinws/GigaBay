@@ -99,4 +99,18 @@ const addImages = async (req, res) => {
     }
 };
 
-export default {getAll, getOne, addOne, modify, addImages};
+const getMine = async (req, res) => {
+    try {
+        const userId = req.user.id; // L'ID vient du Token (Middleware)
+        const auctions = await AuctionService.getAuctionsByUser(userId);
+        
+        res.status(200).json({ 
+            status: "success", 
+            data: auctions 
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+}
+
+export default { getAll, getOne, addOne, modify, addImages, getMine }; 
