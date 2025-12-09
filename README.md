@@ -36,4 +36,6 @@ video de démonstration de notre projet sur YouTube :
 
 - Lien direct de la video 1: [Regarder la vidéo sur YouTube](https://www.youtube.com/watch?v=9iUMYQEBTA8)
 
+- Lien direct de la video 2: [Regarder la vidéo sur YouTube](https://www.youtube.com/watch?v=oJi-3Rsd2eE)
+
 
