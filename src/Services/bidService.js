@@ -4,54 +4,49 @@ import User from "../models/User.js";
 
 class BidService {
   static async placeBid(userId, auctionId, amount) {
-    // Vérifie que l’enchère existe
     const auction = await Auction.findById(auctionId);
-    if (!auction) {
-      throw new Error("Enchère introuvable.");
-    }
+    if (!auction) throw new Error("Enchère introuvable.");
 
-    // Empêche l’utilisateur d’enchérir sur sa propre enchère
-    if (auction.user_id === userId) {
-      throw new Error("Vous ne pouvez pas enchérir sur votre propre enchère.");
-    }
-
-    // Vérifier que l’enchère n’est pas terminée
+    // Vérifications de base (terminé, montant...)
     const now = new Date();
-    const endDate = new Date(auction.end_date);
-    if (!isNaN(endDate.getTime()) && endDate < now) {
-      throw new Error("Cette enchère est déjà terminée.");
-    }
+    if (new Date(auction.end_date) < now) throw new Error("Cette enchère est terminée.");
 
-    // Vérifier le montant (doit être strictement supérieur au prix actuel)
     const currentPrice = Number(auction.current_price);
     const numericAmount = Number(amount);
 
-    if (isNaN(numericAmount) || numericAmount <= currentPrice) {
-      throw new Error(
-        `Le montant doit être supérieur au prix actuel (${currentPrice} €).`
-      );
+    if (numericAmount <= currentPrice) {
+      throw new Error(`Le montant doit être supérieur à ${currentPrice} €.`);
     }
 
+    // On cherche s'il y a déjà une enchère dessus
+    const lastBid = await Bid.findHighest(auctionId);
+
+    //Si oui, on REMBOURSE l'ancien enchérisseur (que ce soit moi ou un autre)
+    if (lastBid) {
+        await User.updateBalance(lastBid.user_id, lastBid.amount);
+    }
+
+    // Maintenant on vérifie si l'utilisateur a assez d'argent pour la NOUVELLE offre
     const user = await User.findById(userId);
+    
     if (user.balance < numericAmount) {
-        throw new Error(`Fonds insuffisants. Votre solde est de ${user.balance} €.`);
+
+        throw new Error(`Fonds insuffisants. Solde : ${user.balance} €.`);
     }
 
+    // On débite le nouveau montant
     await User.updateBalance(userId, -numericAmount);
 
+    // On crée la nouvelle enchère
     const bid = await Bid.create({
       amount: numericAmount,
       user_id: userId,
       auction_id: auctionId,
     });
 
-    // Mettre à jour le prix courant dans la table auctions
     await Auction.updateCurrentPrice(auctionId, numericAmount);
 
-    return {
-      bid,
-      newPrice: numericAmount,
-    };
+    return { bid, newPrice: numericAmount };
   }
 }
 
