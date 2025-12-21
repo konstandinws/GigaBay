@@ -20,6 +20,7 @@ class AuthService {
             body: JSON.stringify({ username, email, password })
         });
 
+
         if (data.accessToken) {
             localStorage.setItem("token", data.accessToken);
         }

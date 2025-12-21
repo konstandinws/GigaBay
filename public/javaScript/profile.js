@@ -9,25 +9,29 @@ document.addEventListener("DOMContentLoaded", async () => {
     const user = AuthService.getCurrentUser();
     if (!user) return; 
 
-    // Remplissage infos profil
     const nameEl = document.getElementById("user-name");
     const emailEl = document.getElementById("user-email");
-    if(nameEl) nameEl.textContent = user.username || "Utilisateur";
-    if(emailEl) emailEl.textContent = user.email || "";
-
-    // Bouton déconnexion
+    const balanceEl = document.querySelector(".balance-amount");
     const logoutBtn = document.getElementById("logout-btn");
+
     if (logoutBtn) logoutBtn.addEventListener("click", () => AuthService.logout());
 
-    // Gestion du solde via le Service
+
+    // On va chercher les vraies infos en BDD via le fetch
     try {
         const response = await AuthService.getProfile(); 
-        const freshUser = response.user;
-        
-        const balanceEl = document.querySelector(".balance-amount");
+        const freshUser = response.user; // On récupère l'objet user complet depuis la réponse
+
+        // Maintenant on affiche les données 
+        if(nameEl) nameEl.textContent = freshUser.username; 
+        if(emailEl) emailEl.textContent = freshUser.email;
         if(balanceEl) balanceEl.textContent = `${freshUser.balance || 0} €`;
 
-    } catch (e) { console.error("Erreur chargement solde"); }
+    } catch (e) { 
+        console.error("Erreur chargement profil", e);
+        // En cas d'erreur réseau, on peut mettre un texte par défaut ou garder le vide
+        if(nameEl) nameEl.textContent = "Erreur de chargement";
+    }
 
     // Bouton ajouter des fonds
     const addFundsBtn = document.querySelector(".balance-card button");
