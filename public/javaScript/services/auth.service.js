@@ -8,9 +8,8 @@ class AuthService {
             body: JSON.stringify({ email, password })
         });
 
-        if (data.token) {
-            localStorage.setItem("token", data.token);
-            // On ne stocke juste le token  
+        if (data.accessToken) {
+            localStorage.setItem("token", data.accessToken);
         }
         return data.user;
     }
@@ -21,12 +20,11 @@ class AuthService {
             body: JSON.stringify({ username, email, password })
         });
 
-        // SI on reçoit un token, on le stocke
-        if (data.token) {
-            localStorage.setItem("token", data.token);
+        if (data.accessToken) {
+            localStorage.setItem("token", data.accessToken);
         }
 
-        return data.user;
+        return data.user; 
     }
 
     static logout() {
