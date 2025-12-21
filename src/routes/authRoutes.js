@@ -13,6 +13,10 @@ router.get("/me", authMiddleware, authController.me);
 
 router.post("/funds", authMiddleware, authController.addFunds);
 
+router.post("/refresh", authController.refreshAccessToken);
+
+router.post("/logout", authController.logout);
+
 // ajouter un validation middleware
 
 export default router;

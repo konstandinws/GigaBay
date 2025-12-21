@@ -22,8 +22,28 @@ const authMiddleware = (req, res, next) => {
         
         // 4. On laisse passer
         next(); 
+
     } catch (error) {
-        res.status(401).json({ message: "Token invalide." });
+        console.error('Erreur d\'authentification:', error);
+        
+        if (error.name === 'JsonWebTokenError') {
+        return res.status(401).json({
+            success: false,
+            message: 'Token invalide'
+        });
+        }
+        
+        if (error.name === 'TokenExpiredError') {
+        return res.status(401).json({
+            success: false,
+            message: 'Access Token expiré'
+        });
+        }
+
+        res.status(500).json({
+            success: false,
+            message: 'Erreur serveur'
+        });
     }
 };
 

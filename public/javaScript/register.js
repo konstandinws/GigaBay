@@ -42,6 +42,13 @@ form.addEventListener("submit", async function (e) {
   try {
     
     Validator.validateRegistration(username, email, password);
+    
+    const response = await fetch(API_BASE_URL + "/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, email, password }),
+      credentials: "include"
+    });
 
 
     await AuthService.register(username, email, password);
@@ -60,7 +67,10 @@ form.addEventListener("submit", async function (e) {
       window.location.href = "/";
     }
 
-    successEl.textContent = "Compte créé ! Redirection...";
+    localStorage.setItem("token", data.accessToken);
+
+    successEl.textContent =
+      "Compte créé avec succès, tu peux te connecter.";
 
     // On redirige direct vers l'accueil (ou l'enchère précédente)
     setTimeout(() => {
