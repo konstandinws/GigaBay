@@ -233,7 +233,8 @@ function setupChat(auctionId) {
             const text = input.value;
 
             if (!user) {
-                alert("Connectez-vous pour poser une question !");
+                const currentUrl = window.location.pathname + window.location.search;
+                window.location.href = `/login?redirect=${encodeURIComponent(currentUrl)}`;
                 return;
             }
             if (!text.trim()) return;
