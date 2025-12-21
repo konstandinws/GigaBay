@@ -274,17 +274,26 @@ function setupChat(auctionId) {
         }
     });
 
-    // Helper pour afficher le message
     function addMessageToDom(msg) {
-        const box = document.getElementById("chat-box");
-        if (!box) return;
+    const box = document.getElementById("chat-box");
+    if (!box) return;
 
-        const div = document.createElement("div");
-        div.style.padding = "8px 0";
-        div.style.borderBottom = "1px solid #f0f0f0";
-        div.innerHTML = `<strong style="color: #7c6700;">${msg.username} :</strong> ${msg.content}`;
-        
-        box.appendChild(div);
-        box.scrollTop = box.scrollHeight; // Scroll automatique vers le bas
-    }
+    const div = document.createElement("div");
+    div.style.padding = "8px 0";
+    div.style.borderBottom = "1px solid #f0f0f0";
+    
+    // On crée le nom en gras
+    const strong = document.createElement("strong");
+    strong.style.color = "#7c6700";
+    strong.textContent = msg.username + " : ";
+
+    // On crée le texte du message de façon sécurisée
+    const textNode = document.createTextNode(msg.content);
+
+    div.appendChild(strong);
+    div.appendChild(textNode);
+    
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+}
 }
