@@ -24,20 +24,24 @@ const authMiddleware = (req, res, next) => {
         next(); 
 
     } catch (error) {
-        console.error('Erreur d\'authentification:', error);
+        if (error.name !== 'TokenExpiredError') {
+            console.error('Erreur d\'authentification:', error.message);
+        }
         
         if (error.name === 'JsonWebTokenError') {
-        return res.status(401).json({
-            success: false,
-            message: 'Token invalide'
-        });
+            return res.status(401).json({
+                success: false,
+                message: 'Token invalide'
+            });
         }
         
         if (error.name === 'TokenExpiredError') {
-        return res.status(401).json({
-            success: false,
-            message: 'Access Token expiré'
-        });
+            // C'est ici que le serveur dit "Stop, ton pass est périmé"
+            // Le frontend (client.js) va recevoir ça et tenter le refresh
+            return res.status(401).json({
+                success: false,
+                message: 'Access Token expiré'
+            });
         }
 
         res.status(500).json({

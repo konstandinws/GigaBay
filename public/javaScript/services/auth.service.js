@@ -40,11 +40,6 @@ class AuthService {
 
         const decoded = parseJwt(token); 
 
-        if (decoded.exp && decoded.exp * 1000 < Date.now()) {
-            this.logout();
-            return null;
-        }
-
         return decoded;
     }
 
