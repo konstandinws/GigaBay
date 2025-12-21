@@ -94,6 +94,20 @@ db.serialize(() => { //éxécute les requetes dans l'ordre
         )
     `); 
 
+    db.run(`
+        CREATE TABLE IF NOT EXISTS comments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            content TEXT NOT NULL,
+            username TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            user_id INTEGER NOT NULL,
+            auction_id INTEGER NOT NULL,
+
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY (auction_id) REFERENCES auctions(id) ON DELETE CASCADE
+        )
+    `);
+
     console.log("✅ Tables créées avec succès.");
 });
 

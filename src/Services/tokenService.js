@@ -17,7 +17,7 @@ class TokenService {
         const accessToken = jwt.sign(
             { 
                 id: user.id,
-                name: user.name,
+                name: user.username,
                 type: "access" 
             },
             accessSecret,
@@ -27,7 +27,7 @@ class TokenService {
         const refreshToken = jwt.sign(
             { 
                 id: user.id,
-                name: user.name,
+                name: user.username,
                 type: "refresh",
                 jti: crypto.randomBytes(16).toString('hex')
             },
@@ -45,7 +45,7 @@ class TokenService {
         const accessToken = jwt.sign(
             { 
                 id: user.id,
-                name: user.name,
+                name: user.username,
                 type: "access" 
             },
             accessSecret,

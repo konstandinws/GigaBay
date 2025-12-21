@@ -18,8 +18,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         const auction = await AuctionService.getOne(auctionId);
         renderPage(auction);
         setupBidSystem(auction);
-
         checkOwner(auction);
+
+        // --- NOUVEAU : On initialise le chat ici ---
+        setupChat(auctionId);
 
     } catch (err) {
         console.error(err);
@@ -35,7 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         title.textContent = "Impossible de charger l'enchère";
 
         const message = document.createElement("p");
-        message.textContent = err.message; // SAFE
+        message.textContent = err.message;
 
         const link = document.createElement("a");
         link.href = "/";
@@ -46,10 +48,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-
-
 function renderPage(auction) {
-
     document.title = auction.title;
     document.getElementById("auction-title").textContent = auction.title;
     document.getElementById("auction-description").textContent = auction.description || "Aucune description.";
@@ -168,15 +167,12 @@ function setupBidSystem(auction) {
 function checkOwner(auction) {
     const user = AuthService.getCurrentUser();
     
-    // Si pas connecté ou si l'ID ne correspond pas, on ne fait rien
     if (!user || user.id !== auction.user_id) {
         return;
     }
 
-    // Sinon, on injecte le bouton
     const container = document.querySelector(".auction-info-panel");
     
-    // On s'assure que le conteneur est en position relative pour placer le bouton
     if (getComputedStyle(container).position === 'static') {
         container.style.position = 'relative';
     }
@@ -184,7 +180,6 @@ function checkOwner(auction) {
     const editBtn = document.createElement("button");
     editBtn.innerHTML = "✏️ Modifier"; 
     
-    // Style du boutonen haut à droite
     editBtn.style.position = "absolute";
     editBtn.style.top = "20px";
     editBtn.style.right = "20px";
@@ -201,9 +196,72 @@ function checkOwner(auction) {
     editBtn.onmouseout = () => editBtn.style.background = "white";
 
     editBtn.onclick = () => {
-
         window.location.href = `/new-auction?id=${auction.id}`; 
     };
 
     container.appendChild(editBtn);
+}
+
+// --- NOUVEAU : FONCTION DU CHAT ---
+function setupChat(auctionId) {
+    // On suppose que le script socket.io est chargé dans le HTML
+    // <script src="/socket.io/socket.io.js"></script>
+    const socket = io(); 
+
+    // 1. Rejoindre la salle (Room)
+    socket.emit("join_auction", auctionId);
+
+    // 2. Charger l'historique des messages
+    socket.on("load_history", (messages) => {
+        const box = document.getElementById("chat-box");
+        if(box) {
+            box.innerHTML = "";
+            messages.forEach(addMessageToDom);
+        }
+    });
+
+    // 3. Recevoir un message en temps réel
+    socket.on("receive_message", (msg) => {
+        addMessageToDom(msg);
+    });
+
+    // 4. Envoyer un message
+    const sendBtn = document.getElementById("chat-send");
+    const input = document.getElementById("chat-input");
+
+    if (sendBtn && input) {
+        sendBtn.addEventListener("click", () => {
+            const user = AuthService.getCurrentUser();
+            const text = input.value;
+
+            if (!user) {
+                alert("Connectez-vous pour poser une question !");
+                return;
+            }
+            if (!text.trim()) return;
+
+            socket.emit("send_message", {
+                auctionId: auctionId,
+                userId: user.id,
+                username: user.username || user.name || "Utilisateur", 
+                message: text
+            });
+
+            input.value = "";
+        });
+    }
+
+    // Helper pour afficher le message
+    function addMessageToDom(msg) {
+        const box = document.getElementById("chat-box");
+        if (!box) return;
+
+        const div = document.createElement("div");
+        div.style.padding = "8px 0";
+        div.style.borderBottom = "1px solid #f0f0f0";
+        div.innerHTML = `<strong style="color: #7c6700;">${msg.username} :</strong> ${msg.content}`;
+        
+        box.appendChild(div);
+        box.scrollTop = box.scrollHeight; // Scroll automatique vers le bas
+    }
 }
