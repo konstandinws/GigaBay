@@ -204,8 +204,6 @@ function checkOwner(auction) {
 
 // --- NOUVEAU : FONCTION DU CHAT ---
 function setupChat(auctionId) {
-    // On suppose que le script socket.io est chargé dans le HTML
-    // <script src="/socket.io/socket.io.js"></script>
     const socket = io(); 
 
     // 1. Rejoindre la salle (Room)
@@ -250,6 +248,30 @@ function setupChat(auctionId) {
             input.value = "";
         });
     }
+
+    socket.on("update_price", (data) => {
+        console.log("Nouveau prix reçu :", data.newPrice);
+        
+        // Mise à jour du gros affichage du prix
+        updatePriceDisplay(data.newPrice);
+
+        // Mise à jour du placeholder de l'input pour aider l'utilisateur
+        const input = document.getElementById("bid-amount");
+        if (input) {
+            const nextMin = (parseFloat(data.newPrice) + 1).toFixed(2); // +1€ min
+            input.placeholder = `Min: ${nextMin} €`;
+            input.value = ""; // On vide l'input s'il y avait un vieux montant
+        }
+
+        // Petit effet visuel rouge pour attirer l'attention
+        const priceEl = document.getElementById("current-price");
+        if(priceEl) {
+            priceEl.style.color = "#e53935"; // Rouge
+            setTimeout(() => {
+                priceEl.style.color = "#447c00"; // Retour vert
+            }, 1000);
+        }
+    });
 
     // Helper pour afficher le message
     function addMessageToDom(msg) {

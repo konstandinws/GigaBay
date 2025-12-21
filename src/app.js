@@ -25,7 +25,10 @@ const io = new Server(server, {
 });
 
 auctionSocket(io);
-
+app.use((req, res, next) => {
+    req.io = io; // On rend le socket accessible partout dans l'API
+    next();
+});
 // Middlewares globaux
 app.use(cors());
 app.use(express.json());

@@ -16,6 +16,14 @@ const placeBid = async (req, res) => {
 
     const result = await BidService.placeBid(userId, auctionId, amount);
 
+    if (req.io) {
+        // On envoie l'événement "update_price" uniquement aux gens sur cette page d'enchère
+        req.io.to(`auction_${auctionId}`).emit("update_price", {
+            newPrice: result.newPrice,
+            bidderId: userId
+        });
+    }
+
     res.status(201).json({
       status: "success",
       message: "Enchère placée avec succès.",
