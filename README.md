@@ -22,6 +22,8 @@ cp .env.example .env
 4. Alimenter la base de données
 ```bash
 node ./seed.js
+# ou avec le script npm:
+npm run init
 ```
 
 5. Lancer l'application
@@ -37,5 +39,7 @@ video de démonstration de notre projet sur YouTube :
 - Lien direct de la video 1: [Regarder la vidéo sur YouTube](https://www.youtube.com/watch?v=9iUMYQEBTA8)
 
 - Lien direct de la video 2: [Regarder la vidéo sur YouTube](https://www.youtube.com/watch?v=oJi-3Rsd2eE)
+
+- Lien direct de la video 3: [Regarder la vidéo sur YouTube](https://www.youtube.com/watch?v=j1kpr4dVkZ0)
 
 

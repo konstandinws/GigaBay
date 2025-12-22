@@ -6,8 +6,11 @@ import crypto from "crypto";
 const accessSecret = process.env.JWT_SECRET;
 const refreshSecret = process.env.JWT_REFRESH_TOKEN_SECRET;
 
-if (!accessSecret || !refreshSecret) {
+if (!accessSecret) {
     throw new Error("ERREUR FATALE : La variable JWT_SECRET n'est pas définie dans le fichier .env !");
+}
+if (!refreshSecret){
+    throw new Error("ERREUR FATALE : La variable JWT_REFRESH_TOKEN_SECRET n'est pas définie dans le fichier .env !");
 }
 
 class TokenService {
