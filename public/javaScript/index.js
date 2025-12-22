@@ -8,6 +8,7 @@ let timerInterval = null;
 let currentPage = 1;
 const LIMIT = 12; 
 let isFilterActive = false;
+let currentSearch = "";
 
 function startCountdown() {
     if (timerInterval) clearInterval(timerInterval);
@@ -144,7 +145,7 @@ async function loadAuctions(page) {
     const btn = document.getElementById("load-more-btn");
     
     try {
-        const response = await AuctionService.getAll(page, LIMIT);
+        const response = await AuctionService.getAll(page, LIMIT, currentSearch);
         const newAuctions = response.data || [];
 
         if (page === 1) {
@@ -174,7 +175,40 @@ document.addEventListener("DOMContentLoaded", () => {
     loadLayout();
     loadAuctions(currentPage);
 
+    // --- GESTION DE LA RECHERCHE PAR CLIC ---
+    const searchInput = document.querySelector(".search-bar input");
+    const searchBtn = document.querySelector(".search-bar button"); // Le bouton Loupe
     const btn = document.getElementById("load-more-btn");
+
+    // Fonction qui lance la recherche
+    const performSearch = () => {
+        currentSearch = searchInput.value.trim(); // On récupère le texte
+        currentPage = 1; // On revient page 1
+        document.getElementById("auctions-list").innerHTML = ""; // On vide la liste
+        
+        // On cache le bouton "Charger plus" temporairement
+        if(btn) btn.style.display = "none";
+
+        loadAuctions(currentPage);
+    };
+
+    if (searchBtn && searchInput) {
+        // 1. Clic sur la loupe
+        searchBtn.addEventListener("click", (e) => {
+            e.preventDefault(); // Empêche le rechargement si c'est un form
+            performSearch();
+        });
+
+        // 2. Appui sur "Entrée" dans le champ (indispensable pour l'UX)
+        searchInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                performSearch();
+            }
+        });
+    }
+
+    
     if(btn) {
         btn.addEventListener("click", () => {
             currentPage++;

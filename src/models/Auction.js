@@ -25,15 +25,26 @@ class Auction {
         });
     }
 
-    static getAll(limit = 12, offset = 0) {
-        return new Promise((resolve, reject) => {
-            const sql = "SELECT * FROM auctions ORDER BY id DESC LIMIT ? OFFSET ?";
-            db.all(sql, [limit, offset], (err, rows) => {
-                if (err) reject(err);
-                else resolve(rows);
-            });
+    static getAll(limit = 12, offset = 0, search = null) { // <--- Ajout du param search
+    return new Promise((resolve, reject) => {
+        let sql = "SELECT * FROM auctions";
+        let params = [];
+
+        // Si on cherche quelque chose, on filtre
+        if (search) {
+            sql += " WHERE title LIKE ? OR description LIKE ?";
+            params.push(`%${search}%`, `%${search}%`);
+        }
+
+        sql += " ORDER BY id DESC LIMIT ? OFFSET ?";
+        params.push(limit, offset); // On ajoute limit/offset à la fin des params
+
+        db.all(sql, params, (err, rows) => {
+            if (err) reject(err);
+            else resolve(rows);
         });
-    }
+    });
+}
 
     static findById(id) {
         return new Promise((resolve, reject) => {
