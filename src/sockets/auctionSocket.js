@@ -3,11 +3,11 @@ import CommentService from "../Services/commentService.js";
 export default function auctionSocket(io) {
     io.on("connection", (socket) => {
 
-        // 1. Rejoindre la salle d'une enchère spécifique
+        // Rejoindre la salle d'une enchère spécifique
         socket.on("join_auction", async (auctionId) => {
             socket.join(`auction_${auctionId}`);
             
-            // Optionnel : Envoyer l'historique des messages à celui qui vient d'arriver
+            // Envoyer l'historique des messages à celui qui vient d'arriver
             try {
                 const history = await CommentService.getComments(auctionId);
                 socket.emit("load_history", history);

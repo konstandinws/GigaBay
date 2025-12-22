@@ -1,0 +1,216 @@
+/* Mise en page globale */
+.auction-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 20px;
+  color: #666;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.back-link:hover {
+  color: var(--primary-color, #7c6700);
+}
+
+/* --- GALERIE IMAGES --- */
+.auction-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#main-image-container {
+  height: 400px;
+  background: #eee;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+#main-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+#thumbnails {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 5px; /* Pour la scrollbar */
+}
+
+/* --- PANNEAU D'INFORMATION --- */
+.auction-info-panel {
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+#auction-title {
+  margin-top: 0;
+  color: var(--secondary-color, #0d3b66);
+  font-size: 2rem;
+  line-height: 1.2;
+}
+
+#auction-description {
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 25px;
+}
+
+/* Carte de prix */
+.price-card {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #eee;
+}
+
+.price-label {
+  font-size: 0.9rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+#current-price {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--accent-green, #447c00);
+}
+
+.timer-container {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.1rem;
+}
+
+#auction-timer {
+  font-weight: bold;
+  color: var(--color-warning, #d32f2f);
+}
+
+/* Section enchérir */
+.bid-section {
+  margin-top: 25px;
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+}
+
+.bid-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-main, #333);
+}
+
+.bid-input-group {
+  display: flex;
+  gap: 10px;
+}
+
+#bid-amount {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+#btn-place-bid {
+  background: var(--primary-color, #7c6700);
+  color: white;
+  border: none;
+  padding: 0 24px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+#btn-place-bid:hover {
+  background: var(--primary-hover, #d29300);
+}
+
+#btn-place-bid:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* --- CHAT SECTION --- */
+.chat-section {
+  grid-column: 1 / -1; /* Prend toute la largeur si besoin, ou juste placé en dessous */
+  margin-top: 30px;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.chat-section h3 {
+  margin-top: 0;
+  color: var(--secondary-color, #0d3b66);
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+#chat-box {
+  height: 300px;
+  overflow-y: scroll;
+  border: 1px solid #e0e0e0;
+  background: #fafafa;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+}
+
+.chat-controls {
+  display: flex;
+  gap: 10px;
+}
+
+#chat-input {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+#chat-send {
+  background: var(--secondary-color, #0d3b66);
+  color: white;
+  border: none;
+  padding: 0 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+#chat-send:hover {
+  background: var(--secondary-light, #145c9e);
+}
+
+/* --- RESPONSIVE MOBILE --- */
+@media (max-width: 768px) {
+  .auction-layout {
+    grid-template-columns: 1fr; /* Une seule colonne sur mobile */
+    gap: 20px;
+  }
+
+  #main-image-container {
+    height: 300px;
+  }
+}
