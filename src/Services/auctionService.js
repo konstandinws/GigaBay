@@ -23,13 +23,6 @@ class AuctionService {
     }
 
     static async createAuction(inputData, userId) {
-        if (!inputData.title || !inputData.price) {
-            throw new Error("Le titre et le prix sont obligatoires");
-        }
-
-        if (inputData.price < 0) {
-            throw new Error("Le prix ne peut pas être négatif.");
-        }
         //Préparation de l'objet pour le Modèle 
         //objet : { title, description, starting_price, end_date, user_id }
         const dataForDb = {
