@@ -3,6 +3,8 @@ import auctionController from "../controllers/auctionController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 import bidController from "../controllers/bidController.js"
 import { upload } from "../middleware/upload.js";
+import validate from "../middleware/validate.js";
+import { createAuctionSchema } from "../validators/auctionSchemas.js";
 
 const router = express.Router();
 
@@ -14,16 +16,8 @@ router.get("/mine", authMiddleware, auctionController.getMine);
 //enchère par id
 router.get("/:id", auctionController.getOne);
 
-//exemple de test CURL
-// curl -X POST http://localhost:3000/api/auctions 
-// -H "Content-Type: application/json" 
-// -d "{\"title\": \"Test Windows\", \"price\": 150, \"end\": \"2025-05-20\"}"
 // créer une enchère
-router.post("/", authMiddleware, auctionController.addOne);
-
-//curl -X PUT http://localhost:3000/api/auctions/1 
-// -H "Content-Type: application/json" 
-// -d "{\"price\": 75}"
+router.post("/", validate(createAuctionSchema), authMiddleware, auctionController.addOne);
 
 router.put("/:id", authMiddleware, auctionController.modify);
 

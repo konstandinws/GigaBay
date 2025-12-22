@@ -2,8 +2,12 @@ import { apiFetch, API_BASE_URL } from "../api/client.js";
 
 class AuctionService {
     
-    static async getAll(page = 1, limit = 10) {
-        return await apiFetch(`/auctions?page=${page}&limit=${limit}`);
+    static async getAll(page = 1, limit = 10, search = "") {
+    let url = `/auctions?page=${page}&limit=${limit}`;
+    if (search) {
+        url += `&q=${encodeURIComponent(search)}`;
+    }
+    return await apiFetch(url);
     }
 
     static async getOne(id) {

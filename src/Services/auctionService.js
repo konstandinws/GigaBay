@@ -6,12 +6,12 @@ import Auction from "../models/Auction.js";
 // mehtodes statiques pour eviter de creer un objet 
 class AuctionService {
     
-    static async getAllAuctions(page = 1, limit = 12){
-        // Page 1 : offset 0, Page 2 : offset 12
-        const offset = (page - 1) * limit;
-        const auctions = await Auction.getAll(limit, offset);
-        return auctions;
-    }
+    static async getAllAuctions(page = 1, limit = 12, search = null){
+    const offset = (page - 1) * limit;
+    // On le passe au modèle
+    const auctions = await Auction.getAll(limit, offset, search);
+    return auctions;
+}
 
     static async getAuctionById(id) {
         const auction = await Auction.findById(id);
@@ -23,13 +23,6 @@ class AuctionService {
     }
 
     static async createAuction(inputData, userId) {
-        if (!inputData.title || !inputData.price) {
-            throw new Error("Le titre et le prix sont obligatoires");
-        }
-
-        if (inputData.price < 0) {
-            throw new Error("Le prix ne peut pas être négatif.");
-        }
         //Préparation de l'objet pour le Modèle 
         //objet : { title, description, starting_price, end_date, user_id }
         const dataForDb = {
@@ -46,7 +39,7 @@ class AuctionService {
         return createdAuction;
     }
 
-    // fonction incomplete
+
     static async modifyAuction(id, data, userId) {
         // 1. Vérification existance
         const auction = await Auction.findById(id);

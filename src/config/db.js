@@ -23,9 +23,7 @@ db.serialize(() => { //éxécute les requetes dans l'ordre
     // Active les clés étrangères
     db.run("PRAGMA foreign_keys = ON;"); //active les clés sécondaires
 
-    console.log("🚧 Vérification des tables...");
-
-    // Table USERS
+    // TABLE users
     db.run(`
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -45,7 +43,7 @@ db.serialize(() => { //éxécute les requetes dans l'ordre
         }
     });
 
-    // Table AUCTIONS (Avec image_url)
+    // TABLE auctions
     db.run(`
         CREATE TABLE IF NOT EXISTS auctions (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -60,7 +58,7 @@ db.serialize(() => { //éxécute les requetes dans l'ordre
         )
     `);
 
-    // Table BIDS
+    // TABLE bids
     db.run(`
         CREATE TABLE IF NOT EXISTS bids (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -68,12 +66,12 @@ db.serialize(() => { //éxécute les requetes dans l'ordre
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             user_id INTEGER NOT NULL,
             auction_id INTEGER NOT NULL,
+
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
             FOREIGN KEY (auction_id) REFERENCES auctions(id) ON DELETE CASCADE
         )
     `);
 
-    // Table IMAGES
     db.run(`
         CREATE TABLE IF NOT EXISTS images (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -84,7 +82,33 @@ db.serialize(() => { //éxécute les requetes dans l'ordre
         )
     `);
 
-    console.log("✅ Tables prêtes.");
+    // TABLE tokens
+    db.run(`
+        CREATE TABLE IF NOT EXISTS tokens (
+            jti TEXT PRIMARY KEY, 
+            user_id INTEGER NOT NULL,
+            expiration INTEGER NOT NULL, 
+            revoked INTEGER DEFAULT 0,
+
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        )
+    `); 
+
+    db.run(`
+        CREATE TABLE IF NOT EXISTS comments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            content TEXT NOT NULL,
+            username TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            user_id INTEGER NOT NULL,
+            auction_id INTEGER NOT NULL,
+
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY (auction_id) REFERENCES auctions(id) ON DELETE CASCADE
+        )
+    `);
+
+    console.log("✅ Tables créées avec succès.");
 });
 
 export default db;

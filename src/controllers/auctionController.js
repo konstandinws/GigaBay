@@ -5,11 +5,12 @@ import AuctionService from "../Services/auctionService.js"
 
 const getAll = async (req, res) => {
     try {
-        // On récupère page et limit de l'URL, avec des valeurs par défaut
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 12;
+        const search = req.query.q || null; // <--- On récupère "q"
 
-        const allAuctions = await AuctionService.getAllAuctions(page, limit);
+        // On le passe au service
+        const allAuctions = await AuctionService.getAllAuctions(page, limit, search);
         
         res.status(200).json({ 
             status: "success",
@@ -55,7 +56,7 @@ const addOne = async (req, res) => {
     }
 }
 
-// pour l'instant pas implementé avec sqlite
+
 const modify = async (req, res) => {
     try {
         const id = req.params.id;
@@ -67,7 +68,7 @@ const modify = async (req, res) => {
 
         const userId = req.user.id;
 
-        const modifiedAuction = AuctionService.modifyAuction(id, data, userId);
+        const modifiedAuction = await AuctionService.modifyAuction(id, data, userId);
 
         res.status(200).json({
             status: "success",

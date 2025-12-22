@@ -42,38 +42,28 @@ form.addEventListener("submit", async function (e) {
   try {
     
     Validator.validateRegistration(username, email, password);
-
-
+  
     await AuthService.register(username, email, password);
 
+    successEl.textContent = "Compte créé avec succès, tu peux te connecter.";
+
     const redirectUrl = getQueryParam("redirect");
-
-    const auctionId = getQueryParam("auctionId");
-
-    if(redirectUrl){
-      window.location.href = redirectUrl;
-    }
-    else if (auctionId) {
-      window.location.href =
-        "/?auctionId=" + encodeURIComponent(auctionId);
-    } else {
-      window.location.href = "/";
-    }
-
-    successEl.textContent = "Compte créé ! Redirection...";
+    const auctionIdFromUrl = getAuctionIdFromUrl();
 
     // On redirige direct vers l'accueil (ou l'enchère précédente)
     setTimeout(() => {
-      if (auctionId) {
-        // Retour vers l'enchère qu'on voulait voir
-        window.location.href = "/auction?id=" + encodeURIComponent(auctionId);
+      if(redirectUrl){
+        window.location.href = redirectUrl;
+      }
+      else if (auctionIdFromUrl) {
+        window.location.href = "/auction?id=" + encodeURIComponent(auctionIdFromUrl);
       } else {
-        // Sinon accueil
         window.location.href = "/";
       }
-    }, 800);
+    }, 800);  
 
   } catch (err) {
-    errorEl.textContent = err.message;
+    console.error(err);
+    errorEl.textContent = err.message || "Erreur lors de l'inscription";
   }
 });

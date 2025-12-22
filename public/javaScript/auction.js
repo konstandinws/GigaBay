@@ -18,8 +18,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         const auction = await AuctionService.getOne(auctionId);
         renderPage(auction);
         setupBidSystem(auction);
-
         checkOwner(auction);
+
+        // --- NOUVEAU : On initialise le chat ici ---
+        setupChat(auctionId);
 
     } catch (err) {
         console.error(err);
@@ -35,7 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         title.textContent = "Impossible de charger l'enchère";
 
         const message = document.createElement("p");
-        message.textContent = err.message; // SAFE
+        message.textContent = err.message;
 
         const link = document.createElement("a");
         link.href = "/";
@@ -46,10 +48,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-
-
 function renderPage(auction) {
-
     document.title = auction.title;
     document.getElementById("auction-title").textContent = auction.title;
     document.getElementById("auction-description").textContent = auction.description || "Aucune description.";
@@ -168,15 +167,12 @@ function setupBidSystem(auction) {
 function checkOwner(auction) {
     const user = AuthService.getCurrentUser();
     
-    // Si pas connecté ou si l'ID ne correspond pas, on ne fait rien
     if (!user || user.id !== auction.user_id) {
         return;
     }
 
-    // Sinon, on injecte le bouton
     const container = document.querySelector(".auction-info-panel");
     
-    // On s'assure que le conteneur est en position relative pour placer le bouton
     if (getComputedStyle(container).position === 'static') {
         container.style.position = 'relative';
     }
@@ -184,7 +180,6 @@ function checkOwner(auction) {
     const editBtn = document.createElement("button");
     editBtn.innerHTML = "✏️ Modifier"; 
     
-    // Style du boutonen haut à droite
     editBtn.style.position = "absolute";
     editBtn.style.top = "20px";
     editBtn.style.right = "20px";
@@ -201,9 +196,104 @@ function checkOwner(auction) {
     editBtn.onmouseout = () => editBtn.style.background = "white";
 
     editBtn.onclick = () => {
-
         window.location.href = `/new-auction?id=${auction.id}`; 
     };
 
     container.appendChild(editBtn);
+}
+
+// --- NOUVEAU : FONCTION DU CHAT ---
+function setupChat(auctionId) {
+    const socket = io(); 
+
+    // 1. Rejoindre la salle (Room)
+    socket.emit("join_auction", auctionId);
+
+    // 2. Charger l'historique des messages
+    socket.on("load_history", (messages) => {
+        const box = document.getElementById("chat-box");
+        if(box) {
+            box.innerHTML = "";
+            messages.forEach(addMessageToDom);
+        }
+    });
+
+    // 3. Recevoir un message en temps réel
+    socket.on("receive_message", (msg) => {
+        addMessageToDom(msg);
+    });
+
+    // 4. Envoyer un message
+    const sendBtn = document.getElementById("chat-send");
+    const input = document.getElementById("chat-input");
+
+    if (sendBtn && input) {
+        sendBtn.addEventListener("click", () => {
+            const user = AuthService.getCurrentUser();
+            const text = input.value;
+
+            if (!user) {
+                const currentUrl = window.location.pathname + window.location.search;
+                window.location.href = `/login?redirect=${encodeURIComponent(currentUrl)}`;
+                return;
+            }
+            if (!text.trim()) return;
+
+            socket.emit("send_message", {
+                auctionId: auctionId,
+                userId: user.id,
+                username: user.username || user.name || "Utilisateur", 
+                message: text
+            });
+
+            input.value = "";
+        });
+    }
+
+    socket.on("update_price", (data) => {
+        console.log("Nouveau prix reçu :", data.newPrice);
+        
+        // Mise à jour du gros affichage du prix
+        updatePriceDisplay(data.newPrice);
+
+        // Mise à jour du placeholder de l'input pour aider l'utilisateur
+        const input = document.getElementById("bid-amount");
+        if (input) {
+            const nextMin = (parseFloat(data.newPrice) + 1).toFixed(2); // +1€ min
+            input.placeholder = `Min: ${nextMin} €`;
+            input.value = ""; // On vide l'input s'il y avait un vieux montant
+        }
+
+        // Petit effet visuel rouge pour attirer l'attention
+        const priceEl = document.getElementById("current-price");
+        if(priceEl) {
+            priceEl.style.color = "#e53935"; // Rouge
+            setTimeout(() => {
+                priceEl.style.color = "#447c00"; // Retour vert
+            }, 1000);
+        }
+    });
+
+    function addMessageToDom(msg) {
+    const box = document.getElementById("chat-box");
+    if (!box) return;
+
+    const div = document.createElement("div");
+    div.style.padding = "8px 0";
+    div.style.borderBottom = "1px solid #f0f0f0";
+    
+    // On crée le nom en gras
+    const strong = document.createElement("strong");
+    strong.style.color = "#7c6700";
+    strong.textContent = msg.username + " : ";
+
+    // On crée le texte du message de façon sécurisée
+    const textNode = document.createTextNode(msg.content);
+
+    div.appendChild(strong);
+    div.appendChild(textNode);
+    
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+}
 }

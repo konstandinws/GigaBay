@@ -25,6 +25,16 @@ class Bid {
             );
         });
     }
+
+    static findHighest(auction_id) {
+        return new Promise((resolve, reject) => {
+            const sql = "SELECT * FROM bids WHERE auction_id = ? ORDER BY amount DESC LIMIT 1";
+            db.get(sql, [auction_id], (err, row) => {
+                if (err) reject(err);
+                else resolve(row);
+            });
+        });
+    }
 }
 
 export default Bid;
