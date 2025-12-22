@@ -68,9 +68,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     const payload = {
       title,
       price,
-      description: descInput.value.trim(),
-      end_date: new Date(endDateInput.value).toISOString()
+      description: descInput.value.trim()
     };
+
+    if (endDateInput.value) {
+        payload.end_date = new Date(endDateInput.value).toISOString();
+    }
 
     try {
       if (isEditMode) {

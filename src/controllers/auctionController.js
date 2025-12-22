@@ -55,7 +55,7 @@ const addOne = async (req, res) => {
     }
 }
 
-// pour l'instant pas implementé avec sqlite
+
 const modify = async (req, res) => {
     try {
         const id = req.params.id;
@@ -67,7 +67,7 @@ const modify = async (req, res) => {
 
         const userId = req.user.id;
 
-        const modifiedAuction = AuctionService.modifyAuction(id, data, userId);
+        const modifiedAuction = await AuctionService.modifyAuction(id, data, userId);
 
         res.status(200).json({
             status: "success",

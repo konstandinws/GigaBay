@@ -33,7 +33,6 @@ export default function auctionSocket(io) {
         });
 
         socket.on("disconnect", () => {
-            // Nettoyage si besoin
         });
     });
 }

@@ -39,7 +39,7 @@ class AuctionService {
         return createdAuction;
     }
 
-    // fonction incomplete
+
     static async modifyAuction(id, data, userId) {
         // 1. Vérification existance
         const auction = await Auction.findById(id);
