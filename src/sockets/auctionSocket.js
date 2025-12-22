@@ -2,7 +2,6 @@ import CommentService from "../Services/commentService.js";
 
 export default function auctionSocket(io) {
     io.on("connection", (socket) => {
-        //console.log(`Socket connecté : ${socket.id}`);
 
         // 1. Rejoindre la salle d'une enchère spécifique
         socket.on("join_auction", async (auctionId) => {
